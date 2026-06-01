@@ -1,0 +1,2763 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Epic Quest — Wiki de Avelir</title>
+<meta name="description" content="Wiki interactivo de Epic Quest. El mundo de Avelir, las reglas, y la creación de personaje.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600;700&family=Nunito:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<style>
+:root {
+  --bg: #faf7f2;
+  --surface: #ffffff;
+  --surface-2: #f5f0e8;
+  --surface-3: #ede5d2;
+  --border: #e8dfd0;
+  --border-dark: #d4c5a8;
+  --gold: #b8860b;
+  --gold-light: #d4a017;
+  --gold-pale: #f5e6c0;
+  --gold-deep: #8b6400;
+  --red: #8b1a1a;
+  --blue: #1a4a7a;
+  --green: #1e6b3a;
+  --text: #2a1f12;
+  --text-mid: #5a4a30;
+  --text-muted: #8a7a5a;
+  --white: #ffffff;
+  --cheran: #9b2020;
+  --vorin: #1a4a7a;
+  --escarlata: #8b1a1a;
+  --aetharion: #1a5276;
+  --urushan: #1e6b3a;
+  --pueblos: #7d6608;
+  --r-pill: 50px;
+  --r-lg: 24px;
+  --r-md: 16px;
+  --r-sm: 10px;
+  --shadow-sm: 0 2px 8px rgba(42,31,18,0.07);
+  --shadow: 0 4px 20px rgba(42,31,18,0.10);
+  --shadow-lg: 0 12px 40px rgba(42,31,18,0.14);
+  --t: 0.25s ease;
+}
+
+* { margin:0; padding:0; box-sizing:border-box; font-style:normal !important; }
+html { scroll-behavior:smooth; color-scheme:light !important; background:#faf7f2 !important; }
+body {
+  background:#faf7f2 !important; color:var(--text);
+  font-family:'Nunito',sans-serif; font-size:16px;
+  line-height:1.7; min-height:100vh; color-scheme:light !important;
+  font-style:normal;
+}
+em, i, cite, dfn, address, var { font-style:normal !important; }
+
+/* ────────── TOP NAV ────────── */
+.topnav {
+  position:sticky; top:0; z-index:100;
+  background:rgba(250,247,242,0.94); backdrop-filter:blur(12px);
+  border-bottom:1px solid var(--border);
+  padding:0.8rem 2rem;
+  display:flex; align-items:center; justify-content:space-between; gap:1rem;
+}
+.nav-logo {
+  font-family:'Cormorant Garamond',serif;
+  font-size:1.4rem; font-weight:700; color:var(--text); letter-spacing:0.08em;
+  white-space:nowrap; cursor:pointer; user-select:none;
+}
+.nav-logo span { color:var(--gold); }
+.nav-right { display:flex; gap:0.4rem; align-items:center; flex-wrap:wrap; justify-content:flex-end; }
+.nav-btn {
+  font-family:'Nunito',sans-serif; font-size:0.78rem; font-weight:700;
+  letter-spacing:0.04em; text-transform:uppercase;
+  padding:0.5rem 1rem; border-radius:var(--r-pill);
+  border:1.5px solid var(--border-dark); cursor:pointer; transition:all var(--t);
+  background:var(--surface); color:var(--text-mid);
+}
+.nav-btn:hover { color:var(--text); border-color:var(--gold); }
+.nav-btn.active { background:var(--gold); border-color:var(--gold); color:var(--white); }
+
+/* ────────── HERO (Landing) ────────── */
+.hero {
+  text-align:center; padding:5rem 2rem 4rem;
+  background:linear-gradient(180deg,var(--surface-2) 0%,var(--bg) 100%);
+  position:relative; overflow:hidden;
+}
+.hero::before {
+  content:''; position:absolute; top:0; left:50%; transform:translateX(-50%);
+  width:60%; height:1px;
+  background:linear-gradient(90deg,transparent,var(--gold),transparent);
+}
+.hero-eyebrow {
+  font-size:0.7rem; font-weight:700; letter-spacing:0.5em;
+  text-transform:uppercase; color:var(--gold); margin-bottom:1rem;
+}
+.hero-title {
+  font-family:'Cormorant Garamond',serif;
+  font-size:clamp(3rem,8vw,6rem); font-weight:700;
+  line-height:1; color:var(--text); margin-bottom:0.4rem;
+}
+.hero-title span { color:var(--gold); }
+.hero-subtitle {
+  font-family:'Cormorant Garamond',serif;
+  font-size:clamp(1rem,2.5vw,1.4rem);
+  color:var(--text-mid); margin-bottom:1.5rem; letter-spacing:0.02em;
+}
+.hero-desc {
+  max-width:560px; margin:0 auto 3rem;
+  font-size:1rem; color:var(--text-mid); line-height:1.8;
+}
+.hero-choices {
+  display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+  gap:1.2rem; max-width:920px; margin:0 auto;
+}
+.hero-choice {
+  display:flex; flex-direction:column; align-items:center; gap:0.6rem;
+  padding:2rem 1.5rem; border-radius:var(--r-lg);
+  cursor:pointer; transition:all var(--t);
+  border:2px solid var(--border); background:var(--surface);
+  box-shadow:var(--shadow-sm); text-decoration:none;
+}
+.hero-choice:hover { transform:translateY(-4px); box-shadow:var(--shadow-lg); border-color:var(--gold); }
+.hero-choice-icon { font-size:2.8rem; }
+.hero-choice-label {
+  font-family:'Cormorant Garamond',serif;
+  font-size:1.4rem; font-weight:700; color:var(--text);
+}
+.hero-choice-sub { font-size:0.82rem; color:var(--text-muted); text-align:center; line-height:1.5; }
+
+/* ────────── SCREENS ────────── */
+.screen { display:none; animation:fadeIn 0.3s ease; }
+.screen.active { display:block; }
+@keyframes fadeIn { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:none} }
+
+/* ────────── SECTION HEADER ────────── */
+.section-top {
+  background:var(--surface-2);
+  border-bottom:1px solid var(--border);
+  padding:2rem 2rem 0;
+}
+.section-top-inner { max-width:900px; margin:0 auto; }
+.section-breadcrumb {
+  font-size:0.75rem; font-weight:600; color:var(--text-muted);
+  margin-bottom:1rem; cursor:pointer; display:inline-flex;
+  align-items:center; gap:0.3rem; transition:color var(--t);
+}
+.section-breadcrumb:hover { color:var(--gold); }
+.section-heading {
+  display:flex; align-items:center; gap:1rem; margin-bottom:1.5rem;
+}
+.section-heading-icon {
+  width:54px; height:54px; border-radius:50%;
+  display:flex; align-items:center; justify-content:center; font-size:1.6rem;
+  flex-shrink:0; background:var(--gold-pale);
+}
+.section-heading-title {
+  font-family:'Cormorant Garamond',serif;
+  font-size:clamp(1.8rem,4vw,2.5rem); font-weight:700; color:var(--text);
+  line-height:1.1;
+}
+.section-heading-sub { font-size:0.9rem; color:var(--text-mid); margin-top:0.2rem; }
+
+/* ────────── SUB PILLS (top of screen) ────────── */
+.sub-pills {
+  display:flex; gap:0.4rem; flex-wrap:wrap; padding-bottom:0;
+}
+.sub-pill {
+  font-family:'Nunito',sans-serif;
+  font-size:0.78rem; font-weight:700; letter-spacing:0.03em;
+  text-transform:uppercase; padding:0.55rem 1.1rem;
+  border-radius:var(--r-pill) var(--r-pill) 0 0;
+  border:1.5px solid var(--border); border-bottom:none;
+  background:var(--bg); color:var(--text-mid);
+  cursor:pointer; transition:all var(--t);
+  position:relative; top:1px; white-space:nowrap;
+}
+.sub-pill:hover { color:var(--text); background:var(--surface); }
+.sub-pill.active {
+  background:var(--surface); color:var(--text);
+  border-color:var(--border-dark); font-weight:800;
+}
+
+/* Standalone pills (not tab-style) — used in Step 1 of Tu Personaje */
+.sub-pills.standalone {
+  margin-bottom:1.5rem; gap:0.5rem;
+}
+.sub-pills.standalone .sub-pill {
+  border-radius:var(--r-pill);
+  border:1.5px solid var(--border);
+  border-bottom:1.5px solid var(--border);
+  top:0;
+}
+.faction-pills .sub-pill.active {
+  background:var(--fc); border-color:var(--fc); color:var(--white);
+}
+.faction-pills .sub-pill:hover { border-color:var(--fc); }
+.faction-empty-hint {
+  padding:2rem 1rem; text-align:center; color:var(--text-muted);
+  font-family:'Cormorant Garamond',serif; font-size:1.15rem;
+  background:var(--surface-2); border-radius:var(--r-lg);
+  border:1.5px dashed var(--border-dark);
+}
+
+/* ────────── KITS (Step 3) ────────── */
+.kit-arch-pills { margin-bottom:1.5rem; }
+.kit-arch-pills .sub-pill.active {
+  background:var(--fc); border-color:var(--fc); color:var(--white);
+}
+.kit-grid {
+  display:grid; grid-template-columns:repeat(auto-fill,minmax(280px,1fr));
+  gap:1rem; align-items:start;
+}
+.kit-card {
+  background:var(--surface); border:1.5px solid var(--border);
+  border-radius:var(--r-lg); padding:1.2rem; cursor:pointer;
+  transition:all var(--t); position:relative; overflow:hidden;
+}
+.kit-card::before {
+  content:''; position:absolute; top:0; left:0; right:0; height:3px;
+  background:var(--ac);
+}
+.kit-card:hover { border-color:var(--ac); transform:translateY(-2px); box-shadow:var(--shadow); }
+.kit-card.selected {
+  grid-column:1 / -1; cursor:default;
+  border-color:var(--gold); box-shadow:0 0 0 2px var(--gold-pale);
+  background:linear-gradient(180deg,var(--surface) 0%,var(--surface-2) 100%);
+}
+.kit-card.selected:hover { transform:none; }
+.kit-card-head { display:flex; align-items:center; gap:0.7rem; margin-bottom:0.5rem; }
+.kit-card-icon { font-size:1.7rem; flex-shrink:0; }
+.kit-card-name { font-family:'Cormorant Garamond',serif; font-size:1.2rem; font-weight:700; color:var(--text); line-height:1.1; }
+.kit-card-role { font-size:0.7rem; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; color:var(--text-muted); margin-top:0.1rem; }
+.kit-arch-badge {
+  font-size:0.9rem; opacity:0.55;
+  width:30px; height:30px; border-radius:50%;
+  background:var(--surface-2); display:flex; align-items:center; justify-content:center;
+}
+.kit-card-fan { font-size:0.88rem; color:var(--text-mid); line-height:1.55; margin-bottom:0.8rem; }
+.kit-stats-row { display:flex; gap:0.5rem; flex-wrap:wrap; }
+.kit-stat-badge {
+  font-size:0.72rem; font-weight:700; letter-spacing:0.04em;
+  padding:0.3rem 0.7rem; border-radius:var(--r-pill);
+}
+.kit-stat-badge.hp { background:#fdecea; color:var(--red); }
+.kit-stat-badge.aen { background:#e8f0fd; color:var(--blue); }
+
+.kit-expand {
+  margin-top:1rem; padding-top:1.2rem;
+  border-top:1.5px solid var(--border);
+  animation:fadeIn 0.25s ease;
+}
+.kit-stat-block {
+  background:var(--gold-pale); border-left:3px solid var(--gold);
+  border-radius:0 var(--r-md) var(--r-md) 0;
+  padding:0.9rem 1.1rem; margin-bottom:1rem;
+}
+.kit-stat-block-label { font-size:0.68rem; font-weight:700; letter-spacing:0.15em; text-transform:uppercase; color:var(--gold-deep); margin-bottom:0.4rem; }
+.kit-stat-block-row {
+  display:flex; gap:1.5rem; flex-wrap:wrap;
+  font-family:'Cormorant Garamond',serif; font-size:1.15rem; color:var(--text);
+}
+.kit-stat-block-row strong { color:var(--gold-deep); font-size:1.4rem; }
+.kit-stat-note { font-size:0.72rem; color:var(--text-muted); margin-top:0.4rem; line-height:1.4; }
+
+.kit-hab {
+  background:var(--surface); border:1.5px solid var(--border-dark);
+  border-radius:var(--r-md); padding:1rem 1.2rem; margin-bottom:1rem;
+}
+.kit-hab-head { display:flex; align-items:center; justify-content:space-between; gap:0.7rem; margin-bottom:0.5rem; flex-wrap:wrap; }
+.kit-hab-name { font-family:'Cormorant Garamond',serif; font-size:1.1rem; font-weight:700; color:var(--text); }
+.kit-hab-cost {
+  font-size:0.7rem; font-weight:700; letter-spacing:0.05em;
+  padding:0.25rem 0.65rem; border-radius:var(--r-pill);
+  background:var(--blue); color:var(--white);
+}
+.kit-hab-desc { font-size:0.92rem; color:var(--text-mid); line-height:1.65; margin-bottom:0.8rem; }
+.kit-drawback {
+  background:#fdecea; border:1.5px solid #f5c2c2;
+  border-radius:var(--r-md); padding:0.7rem 0.95rem;
+}
+.kit-drawback-label { font-size:0.68rem; font-weight:700; letter-spacing:0.15em; text-transform:uppercase; color:var(--red); margin-bottom:0.3rem; }
+.kit-drawback-text { font-size:0.88rem; color:var(--text-mid); line-height:1.6; }
+
+.kit-confirm-row {
+  display:flex; align-items:center; justify-content:space-between; gap:0.6rem;
+  margin-top:0.8rem; padding-top:0.8rem; border-top:1px solid var(--border);
+  flex-wrap:wrap;
+}
+.kit-confirm-check {
+  font-family:'Nunito',sans-serif; font-size:0.85rem; font-weight:700;
+  color:var(--green); display:inline-flex; align-items:center; gap:0.4rem;
+  padding:0.4rem 0.9rem; background:#e8f5ec; border-radius:var(--r-pill);
+}
+
+.subsection { display:none; }
+.subsection.active { display:block; animation:fadeIn 0.25s ease; }
+.content-area {
+  max-width:900px; margin:0 auto; padding:2.5rem 2rem 5rem;
+}
+
+/* ────────── COMPONENTS (lifted from rules) ────────── */
+.intro-text {
+  font-size:1.05rem; color:var(--text-mid); line-height:1.85;
+  margin-bottom:1.8rem; max-width:680px;
+}
+.cards-row {
+  display:grid; grid-template-columns:repeat(auto-fill,minmax(220px,1fr));
+  gap:1rem; margin-bottom:1.5rem;
+}
+.card {
+  background:var(--surface); border:1.5px solid var(--border);
+  border-radius:var(--r-lg); padding:1.3rem;
+  transition:all var(--t); box-shadow:var(--shadow-sm);
+}
+.card:hover { border-color:var(--border-dark); transform:translateY(-2px); box-shadow:var(--shadow); }
+.card-icon {
+  width:38px; height:38px; border-radius:50%;
+  display:flex; align-items:center; justify-content:center;
+  font-size:1.1rem; margin-bottom:0.7rem;
+}
+.card-title {
+  font-family:'Cormorant Garamond',serif;
+  font-size:1.15rem; font-weight:700; color:var(--text); margin-bottom:0.3rem;
+}
+.card-body { font-size:0.9rem; color:var(--text-mid); line-height:1.6; }
+
+.highlight {
+  border-left:3px solid var(--gold);
+  border-radius:0 var(--r-md) var(--r-md) 0;
+  padding:1.1rem 1.4rem; margin:1.2rem 0;
+  background:var(--gold-pale);
+}
+.highlight-title {
+  font-family:'Cormorant Garamond',serif;
+  font-size:1.05rem; font-weight:700; color:var(--gold-deep); margin-bottom:0.3rem;
+}
+.highlight-body { font-size:0.93rem; color:var(--text-mid); line-height:1.7; }
+
+.formula {
+  background:var(--surface-2); border:1.5px solid var(--border-dark);
+  border-radius:var(--r-lg); padding:1.5rem 2rem;
+  text-align:center; margin:1.5rem 0;
+}
+.formula-main {
+  font-family:'Cormorant Garamond',serif;
+  font-size:clamp(1.1rem,3vw,1.5rem); font-weight:700;
+  color:var(--red); margin-bottom:0.6rem;
+}
+.formula-sub {
+  font-size:0.83rem; color:var(--text-mid);
+  display:flex; justify-content:center; gap:1.2rem; flex-wrap:wrap;
+}
+
+.steps { display:flex; flex-direction:column; gap:0; margin:1rem 0; }
+.step {
+  display:flex; gap:1rem; align-items:flex-start;
+  padding:0.95rem 0; border-bottom:1px solid var(--border);
+}
+.step:last-child { border-bottom:none; }
+.step-num {
+  width:32px; height:32px; border-radius:50%;
+  background:var(--gold-pale); border:2px solid var(--gold);
+  display:flex; align-items:center; justify-content:center;
+  font-family:'Cormorant Garamond',serif; font-size:1rem;
+  font-weight:700; color:var(--gold-deep); flex-shrink:0; margin-top:2px;
+}
+.step-title { font-weight:700; font-size:0.95rem; color:var(--text); margin-bottom:0.18rem; }
+.step-desc { font-size:0.88rem; color:var(--text-mid); line-height:1.6; }
+
+.compare-grid { display:grid; grid-template-columns:1fr 1fr; gap:1rem; margin:1rem 0; }
+.compare-card {
+  border-radius:var(--r-md); padding:1.25rem;
+  border:1.5px solid var(--border); background:var(--surface);
+}
+.compare-label {
+  font-size:0.62rem; font-weight:700; letter-spacing:0.2em;
+  text-transform:uppercase; margin-bottom:0.4rem;
+}
+.compare-title {
+  font-family:'Cormorant Garamond',serif;
+  font-size:1.15rem; font-weight:700; color:var(--text); margin-bottom:0.5rem;
+}
+.compare-list { list-style:none; }
+.compare-list li {
+  font-size:0.88rem; color:var(--text-mid);
+  padding:0.2rem 0; display:flex; align-items:flex-start;
+  gap:0.4rem; line-height:1.5;
+}
+.compare-list li::before { content:'·'; color:var(--gold); font-weight:900; flex-shrink:0; }
+
+.diff-scale {
+  display:flex; border-radius:var(--r-pill);
+  overflow:hidden; border:1.5px solid var(--border-dark); margin:1rem 0;
+}
+.diff-item {
+  flex:1; text-align:center; padding:0.6rem 0.3rem;
+  border-right:1px solid var(--border);
+}
+.diff-item:last-child { border-right:none; }
+.diff-num { font-family:'Cormorant Garamond',serif; font-size:1.15rem; font-weight:700; }
+.diff-label { font-size:0.62rem; font-weight:700; letter-spacing:0.04em; text-transform:uppercase; margin-top:2px; }
+
+/* "En Acción" colapsable */
+.en-accion-wrap { margin-top:2rem; }
+/* Variante "top": cuando va arriba (primera, abierta por defecto) */
+.en-accion-wrap.top { margin-top:0; margin-bottom:2rem; }
+.en-accion-wrap.top .en-accion-btn .en-accion-tag { background:var(--gold-light); }
+.en-accion-wrap.top::before {
+  content:'Empieza por aquí — mira cómo se siente en la mesa';
+  display:block; font-size:0.72rem; font-weight:700; letter-spacing:0.15em;
+  text-transform:uppercase; color:var(--gold-deep); margin-bottom:0.5rem;
+}
+.en-accion-btn {
+  width:100%; background:var(--surface);
+  border:1.5px solid var(--border-dark);
+  border-radius:var(--r-lg); padding:1rem 1.3rem;
+  display:flex; align-items:center; justify-content:space-between;
+  cursor:pointer; transition:all var(--t);
+  font-family:'Nunito',sans-serif; font-size:0.92rem;
+  font-weight:700; color:var(--text); text-align:left; gap:0.5rem;
+}
+.en-accion-btn:hover { background:var(--surface-2); border-color:var(--gold); }
+.en-accion-btn.open {
+  border-radius:var(--r-lg) var(--r-lg) 0 0;
+  border-color:var(--gold); background:var(--gold-pale);
+  color:var(--gold-deep);
+}
+.en-accion-label { display:flex; align-items:center; gap:0.7rem; }
+.en-accion-tag {
+  font-size:0.62rem; font-weight:700; letter-spacing:0.15em;
+  text-transform:uppercase; background:var(--gold);
+  color:var(--white); padding:0.18rem 0.55rem; border-radius:var(--r-pill);
+}
+.en-accion-btn.open .en-accion-tag { background:var(--gold-deep); }
+.en-accion-arrow { font-size:0.75rem; color:var(--text-muted); transition:transform var(--t); flex-shrink:0; }
+.en-accion-btn.open .en-accion-arrow { transform:rotate(180deg); color:var(--gold-deep); }
+.en-accion-body {
+  max-height:0; overflow:hidden;
+  transition:max-height 0.4s ease, padding 0.3s ease;
+  background:var(--surface);
+  border:1.5px solid var(--gold); border-top:none;
+  border-radius:0 0 var(--r-lg) var(--r-lg);
+  padding:0 1.4rem;
+}
+.en-accion-body.open { max-height:900px; padding:1.3rem 1.4rem; }
+.scene-text {
+  font-family:'Cormorant Garamond',serif;
+  font-size:1.08rem;
+  color:var(--text-mid); line-height:1.9;
+  border-left:2px solid var(--gold-pale);
+  padding-left:1rem;
+}
+.scene-text p { margin-bottom:0.7rem; }
+.scene-text p:last-child { margin-bottom:0; }
+
+.divider { text-align:center; color:var(--border-dark); font-size:1rem; letter-spacing:0.8em; margin:2rem 0; opacity:0.5; }
+
+.echo-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(190px,1fr)); gap:0.8rem; margin:1rem 0; }
+.echo-card {
+  background:var(--surface); border:1.5px solid var(--border);
+  border-radius:var(--r-lg); padding:1rem 1.1rem; transition:all var(--t);
+}
+.echo-card:hover { border-color:var(--green); background:#e8f5ec; transform:translateY(-2px); }
+.echo-icon { font-size:1.5rem; margin-bottom:0.4rem; display:block; }
+.echo-title { font-weight:700; font-size:0.9rem; color:var(--text); margin-bottom:0.2rem; }
+.echo-desc { font-size:0.84rem; color:var(--text-mid); line-height:1.5; }
+
+/* ────────── EL MUNDO — Faction Cards ────────── */
+.faction-grid {
+  display:grid; grid-template-columns:repeat(auto-fill,minmax(280px,1fr));
+  gap:1.2rem; margin-bottom:2rem;
+}
+.faction-tile {
+  background:var(--surface); border:1.5px solid var(--border);
+  border-radius:var(--r-lg); padding:1.5rem; cursor:pointer;
+  transition:all var(--t); box-shadow:var(--shadow-sm);
+  position:relative; overflow:hidden;
+}
+.faction-tile::before {
+  content:''; position:absolute; top:0; left:0; right:0; height:4px;
+  background:var(--fc);
+}
+.faction-tile:hover { transform:translateY(-3px); box-shadow:var(--shadow); border-color:var(--fc); }
+.faction-tile-head { display:flex; align-items:center; gap:0.8rem; margin-bottom:0.8rem; }
+.faction-tile-icon { font-size:1.8rem; }
+.faction-tile-name { font-family:'Cormorant Garamond',serif; font-size:1.3rem; font-weight:700; color:var(--text); line-height:1.15; }
+.faction-tile-sub { font-size:0.78rem; color:var(--text-muted); margin-top:0.15rem; }
+.faction-tile-quote { font-size:0.9rem; color:var(--text-mid); line-height:1.65; }
+
+/* Step 1 inline expansion */
+.faction-tile.expanded {
+  grid-column:1 / -1; cursor:default;
+  box-shadow:var(--shadow-lg); transform:none;
+  background:linear-gradient(180deg,var(--surface) 0%,var(--surface-2) 100%);
+}
+.faction-tile.expanded:hover { transform:none; }
+.faction-tile.dim { opacity:0.55; }
+.faction-tile.dim:hover { opacity:1; }
+.faction-expansion { display:none; }
+.faction-tile.expanded .faction-expansion {
+  display:block; margin-top:1.3rem; padding-top:1.3rem;
+  border-top:1.5px solid var(--border);
+}
+.faction-expansion .identity-text { margin-bottom:1rem; }
+.faction-expansion .question-box { margin:1rem 0 1.2rem; }
+.option-card { cursor:pointer; user-select:none; }
+.option-card.selected {
+  border-color:var(--green); background:#e8f5ec;
+  box-shadow:0 0 0 2px var(--green);
+}
+.option-card.selected .feat-box { background:#fff; }
+.option-card.selected::after {
+  content:'✓'; position:absolute; top:0.6rem; right:0.8rem;
+  width:24px; height:24px; border-radius:50%;
+  background:var(--green); color:white; display:flex;
+  align-items:center; justify-content:center; font-weight:700; font-size:0.85rem;
+}
+.option-card { position:relative; }
+.expansion-hint {
+  text-align:center; font-size:0.85rem; color:var(--text-muted);
+  padding:1rem; font-family:'Cormorant Garamond',serif; font-size:1rem;
+}
+.expansion-actions {
+  display:flex; gap:0.6rem; justify-content:space-between; margin-top:1.5rem;
+  padding-top:1.2rem; border-top:1px solid var(--border); flex-wrap:wrap;
+}
+
+/* Faction detail */
+.faction-detail { max-width:780px; margin:0 auto; }
+.faction-detail-head {
+  display:flex; align-items:center; gap:1.1rem;
+  margin-bottom:1.8rem; padding-bottom:1.5rem;
+  border-bottom:2px solid var(--fc);
+}
+.faction-detail-icon {
+  width:64px; height:64px; border-radius:50%;
+  background:var(--surface-2); display:flex; align-items:center; justify-content:center;
+  font-size:1.9rem; border:2px solid var(--fc); flex-shrink:0;
+}
+.faction-detail-name {
+  font-family:'Cormorant Garamond',serif;
+  font-size:clamp(1.6rem,4vw,2.2rem); font-weight:700; color:var(--fc); line-height:1.1;
+}
+.faction-detail-sub { font-size:0.85rem; color:var(--text-mid); margin-top:0.2rem; }
+
+.declaration {
+  font-family:'Cormorant Garamond',serif;
+  font-size:clamp(1.1rem,2.5vw,1.35rem); font-weight:500;
+  color:var(--text); line-height:1.55;
+  padding:1.5rem 1.8rem; margin:1.2rem 0 2rem;
+  background:var(--surface);
+  border-left:4px solid var(--fc);
+  border-radius:0 var(--r-md) var(--r-md) 0;
+  box-shadow:var(--shadow-sm);
+}
+.declaration::before { content:'"'; color:var(--fc); font-size:1.5em; line-height:0; vertical-align:-0.3em; margin-right:0.1em; }
+.declaration::after { content:'"'; color:var(--fc); font-size:1.5em; line-height:0; vertical-align:-0.3em; margin-left:0.05em; }
+
+.section-block { margin-bottom:2rem; }
+.section-label {
+  font-size:0.7rem; font-weight:700; letter-spacing:0.2em;
+  text-transform:uppercase; color:var(--fc); margin-bottom:0.7rem;
+}
+.news-text {
+  font-size:1rem; color:var(--text); line-height:1.85;
+}
+.kw {
+  font-weight:700; cursor:pointer;
+  border-bottom:2px solid var(--fc);
+  padding:0 1px; transition:background var(--t);
+  color:var(--text);
+}
+.kw:hover { background:var(--gold-pale); }
+
+.history-text p { font-size:0.97rem; color:var(--text-mid); line-height:1.85; margin-bottom:0.9rem; }
+.history-text p:last-child { margin-bottom:0; }
+.government-text { font-size:0.95rem; color:var(--text-mid); line-height:1.8; }
+.government-text strong { color:var(--text); font-weight:700; }
+
+.figures-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(240px,1fr)); gap:0.9rem; }
+.figure-card {
+  background:var(--surface); border:1.5px solid var(--border);
+  border-radius:var(--r-md); padding:1rem 1.1rem;
+}
+.figure-name { font-family:'Cormorant Garamond',serif; font-size:1.05rem; font-weight:700; color:var(--fc); margin-bottom:0.35rem; line-height:1.25; }
+.figure-desc { font-size:0.85rem; color:var(--text-mid); line-height:1.55; }
+
+.geo-text { font-size:0.97rem; color:var(--text-mid); line-height:1.8; }
+
+.identity-text {
+  font-family:'Cormorant Garamond',serif;
+  font-size:1.1rem; color:var(--text-mid); line-height:1.8;
+  padding:1.1rem 1.3rem; background:var(--surface-2);
+  border-radius:var(--r-md); margin-bottom:1.5rem;
+}
+.question-box {
+  text-align:center; padding:1.6rem 1.5rem; margin:1.5rem 0;
+  background:linear-gradient(135deg,var(--fc) 0%,var(--gold-deep) 100%);
+  border-radius:var(--r-lg); color:var(--white);
+}
+.question-text {
+  font-family:'Cormorant Garamond',serif;
+  font-size:clamp(1.2rem,3vw,1.6rem); font-weight:600; letter-spacing:0.02em;
+}
+
+.options-grid {
+  display:grid; grid-template-columns:repeat(auto-fill,minmax(240px,1fr));
+  gap:1rem;
+}
+.option-card {
+  background:var(--surface); border:1.5px solid var(--border);
+  border-radius:var(--r-lg); padding:1.3rem;
+  display:flex; flex-direction:column; gap:0.5rem;
+  transition:all var(--t);
+}
+.option-card:hover { border-color:var(--fc); transform:translateY(-2px); box-shadow:var(--shadow); }
+.option-icon { font-size:1.8rem; }
+.option-title { font-family:'Cormorant Garamond',serif; font-size:1.15rem; font-weight:700; color:var(--text); }
+.option-desc { font-size:0.88rem; color:var(--text-mid); line-height:1.55; }
+.feat-box {
+  background:var(--gold-pale); border-radius:var(--r-md);
+  padding:0.85rem 1rem; margin-top:0.4rem;
+}
+.feat-name {
+  font-family:'Cormorant Garamond',serif; font-size:0.95rem;
+  font-weight:700; color:var(--gold-deep); margin-bottom:0.25rem;
+}
+.feat-desc { font-size:0.82rem; color:var(--text-mid); line-height:1.55; }
+
+/* Attribute badge on option cards (Cuerpo / Mente / Echo) */
+.option-attr-badge {
+  display:inline-flex; align-items:center;
+  font-size:0.62rem; font-weight:700; letter-spacing:0.18em;
+  text-transform:uppercase;
+  padding:0.25rem 0.65rem; border-radius:var(--r-pill);
+  margin-bottom:0.5rem;
+}
+.option-attr-badge.attr-cuerpo { background:#fdecea; color:var(--red); }
+.option-attr-badge.attr-mente  { background:#e8f0fd; color:var(--blue); }
+.option-attr-badge.attr-echo   { background:#e8f5ec; color:var(--green); }
+.option-card[data-attr="Cuerpo"] .feat-box { background:#fdecea; }
+.option-card[data-attr="Mente"]  .feat-box { background:#e8f0fd; }
+.option-card[data-attr="Echo"]   .feat-box { background:#e8f5ec; }
+.option-card[data-attr="Cuerpo"] .feat-name { color:var(--red); }
+.option-card[data-attr="Mente"]  .feat-name { color:var(--blue); }
+.option-card[data-attr="Echo"]   .feat-name { color:var(--green); }
+
+/* ────────── KEYWORD TOOLTIP / BOTTOM SHEET ────────── */
+.kw-tooltip {
+  position:absolute; max-width:340px;
+  background:var(--text); color:var(--surface);
+  padding:0.7rem 0.95rem; border-radius:var(--r-md);
+  font-size:0.85rem; line-height:1.55;
+  box-shadow:var(--shadow-lg); z-index:200;
+  opacity:0; pointer-events:none; transform:translateY(-6px);
+  transition:opacity var(--t), transform var(--t);
+}
+.kw-tooltip.show { opacity:1; transform:translateY(0); pointer-events:auto; }
+.kw-tooltip strong { color:var(--gold-light); display:block; margin-bottom:0.25rem; font-weight:700; }
+
+/* Mobile bottom sheet */
+.kw-sheet-backdrop {
+  position:fixed; inset:0; background:rgba(0,0,0,0.45);
+  opacity:0; pointer-events:none; transition:opacity var(--t);
+  z-index:300;
+}
+.kw-sheet-backdrop.show { opacity:1; pointer-events:auto; }
+.kw-sheet {
+  position:fixed; left:0; right:0; bottom:0;
+  background:var(--surface); border-radius:var(--r-lg) var(--r-lg) 0 0;
+  padding:1.5rem 1.5rem 2rem; z-index:301;
+  transform:translateY(100%); transition:transform 0.3s ease;
+  box-shadow:0 -12px 40px rgba(0,0,0,0.3); max-height:60vh; overflow-y:auto;
+}
+.kw-sheet.show { transform:translateY(0); }
+.kw-sheet-handle { width:48px; height:4px; background:var(--border-dark); border-radius:2px; margin:0 auto 1rem; }
+.kw-sheet-title { font-family:'Cormorant Garamond',serif; font-size:1.35rem; font-weight:700; color:var(--gold-deep); margin-bottom:0.5rem; }
+.kw-sheet-body { font-size:0.95rem; color:var(--text-mid); line-height:1.7; }
+
+/* ────────── TU PERSONAJE ────────── */
+.steps-indicator {
+  display:flex; gap:0.4rem; padding:1.2rem 0 0; flex-wrap:wrap;
+}
+.step-pill {
+  font-family:'Nunito',sans-serif;
+  font-size:0.78rem; font-weight:700; letter-spacing:0.03em;
+  text-transform:uppercase; padding:0.55rem 1.1rem;
+  border-radius:var(--r-pill); border:1.5px solid var(--border-dark);
+  background:var(--surface); color:var(--text-mid);
+  cursor:pointer; transition:all var(--t); display:inline-flex; align-items:center; gap:0.45rem;
+}
+.step-pill:hover { color:var(--text); border-color:var(--gold); }
+.step-pill.active { background:var(--gold); border-color:var(--gold); color:var(--white); }
+.step-pill.completed { background:var(--green); border-color:var(--green); color:var(--white); }
+.step-pill .check { font-size:0.78rem; }
+
+.class-list { display:grid; grid-template-columns:repeat(auto-fill,minmax(280px,1fr)); gap:1rem; }
+.class-card {
+  background:var(--surface); border:1.5px solid var(--border);
+  border-radius:var(--r-lg); padding:1.3rem; cursor:pointer;
+  transition:all var(--t);
+}
+.class-card:hover { border-color:var(--gold); transform:translateY(-2px); box-shadow:var(--shadow); }
+.class-card.selected { border-color:var(--gold); background:var(--gold-pale); }
+.class-head { display:flex; align-items:center; gap:0.8rem; margin-bottom:0.7rem; }
+.class-icon { font-size:1.7rem; }
+.class-name { font-family:'Cormorant Garamond',serif; font-size:1.25rem; font-weight:700; color:var(--text); }
+.class-rama {
+  font-size:0.6rem; font-weight:700; letter-spacing:0.15em; text-transform:uppercase;
+  padding:0.18rem 0.55rem; border-radius:var(--r-pill);
+  background:var(--surface-2); color:var(--text-muted);
+}
+.class-rama.fuerza { background:#fdecea; color:var(--red); }
+.class-rama.magia { background:#e8f0fd; color:var(--blue); }
+.class-fantasia { font-size:0.88rem; color:var(--text-mid); line-height:1.6; margin-bottom:0.6rem; }
+.class-recurso { font-size:0.78rem; color:var(--text-muted); }
+.class-recurso strong { color:var(--gold-deep); }
+
+/* Class detail */
+.class-detail { animation:fadeIn 0.3s ease; }
+.class-detail-head {
+  display:flex; align-items:flex-start; gap:1rem; flex-wrap:wrap;
+  padding-bottom:1.5rem; border-bottom:2px solid var(--gold);
+  margin-bottom:1.5rem;
+}
+.class-detail-icon { font-size:3rem; line-height:1; }
+.class-detail-info { flex:1; min-width:200px; }
+.class-detail-name { font-family:'Cormorant Garamond',serif; font-size:clamp(1.7rem,4vw,2.3rem); font-weight:700; color:var(--text); line-height:1.1; }
+.class-detail-fan { font-size:0.97rem; color:var(--text-mid); line-height:1.7; margin-top:0.4rem; }
+.class-detail-meta { display:flex; gap:0.5rem; margin-top:0.6rem; flex-wrap:wrap; }
+.meta-pill {
+  font-size:0.7rem; font-weight:700; letter-spacing:0.05em;
+  padding:0.3rem 0.75rem; border-radius:var(--r-pill);
+  background:var(--gold-pale); color:var(--gold-deep);
+}
+
+.habilidad {
+  background:var(--surface); border:1.5px solid var(--border);
+  border-radius:var(--r-lg); padding:1.3rem 1.4rem; margin-bottom:1rem;
+}
+.habilidad.heroica { border-color:var(--gold); background:linear-gradient(180deg,var(--gold-pale) 0%,var(--surface) 50%); }
+.hab-head { display:flex; align-items:center; gap:0.6rem; margin-bottom:0.4rem; flex-wrap:wrap; }
+.hab-num {
+  width:28px; height:28px; border-radius:50%;
+  background:var(--surface-2); display:flex; align-items:center; justify-content:center;
+  font-family:'Cormorant Garamond',serif; font-weight:700; font-size:0.9rem; color:var(--text);
+  flex-shrink:0;
+}
+.habilidad.heroica .hab-num { background:var(--gold); color:var(--white); }
+.hab-name { font-family:'Cormorant Garamond',serif; font-size:1.15rem; font-weight:700; color:var(--text); }
+.hab-tag {
+  font-size:0.6rem; font-weight:700; letter-spacing:0.15em;
+  text-transform:uppercase; background:var(--gold); color:var(--white);
+  padding:0.18rem 0.55rem; border-radius:var(--r-pill);
+}
+.hab-desc { font-size:0.92rem; color:var(--text-mid); line-height:1.65; margin-bottom:0.9rem; }
+
+.table-wrap { overflow-x:auto; border-radius:var(--r-md); border:1px solid var(--border); }
+.hab-table {
+  width:100%; border-collapse:collapse; font-size:0.83rem; min-width:540px;
+}
+.hab-table th, .hab-table td {
+  padding:0.55rem 0.7rem; text-align:left; border-bottom:1px solid var(--border);
+  vertical-align:top;
+}
+.hab-table th {
+  background:var(--surface-2); color:var(--text);
+  font-weight:700; font-size:0.72rem; letter-spacing:0.05em; text-transform:uppercase;
+}
+.hab-table tr:last-child td { border-bottom:none; }
+.hab-table td:first-child { font-weight:700; color:var(--gold-deep); white-space:nowrap; }
+.hab-table tr:nth-child(even) td { background:rgba(245,230,192,0.18); }
+
+/* Mobile: collapse table into stacked card per plano */
+@media (max-width:720px) {
+  .table-wrap { overflow-x:visible; border:none; background:transparent; }
+  .hab-table { display:block; min-width:0; font-size:0.84rem; }
+  .hab-table thead { display:none; }
+  .hab-table tbody { display:block; }
+  .hab-table tr {
+    display:block; margin-bottom:0.7rem;
+    background:var(--surface); border:1.5px solid var(--border);
+    border-radius:var(--r-md); padding:0.7rem 0.9rem;
+  }
+  .hab-table tr:nth-child(even) td { background:transparent; }
+  .hab-table tr:last-child { margin-bottom:0; }
+  .hab-table td {
+    display:flex; gap:0.7rem; padding:0.3rem 0;
+    border-bottom:1px dashed var(--border);
+    font-size:0.85rem;
+  }
+  .hab-table td:last-child { border-bottom:none; }
+  .hab-table td::before {
+    content:attr(data-label);
+    flex-shrink:0; width:60px; font-size:0.65rem; font-weight:700;
+    letter-spacing:0.1em; text-transform:uppercase; color:var(--text-muted);
+    padding-top:2px;
+  }
+  .hab-table td:first-child {
+    font-family:'Cormorant Garamond',serif; font-size:1.05rem;
+    font-weight:700; color:var(--gold-deep);
+    padding-bottom:0.5rem; margin-bottom:0.3rem;
+    border-bottom:1.5px solid var(--gold-pale);
+  }
+  .hab-table td:first-child::before { display:none; }
+}
+
+.subclases-list { display:grid; grid-template-columns:repeat(auto-fill,minmax(240px,1fr)); gap:0.7rem; margin-top:1rem; }
+.subclase-item {
+  background:var(--surface); border:1px solid var(--border);
+  border-radius:var(--r-md); padding:0.85rem 1rem;
+}
+.subclase-name { font-family:'Cormorant Garamond',serif; font-size:1rem; font-weight:700; color:var(--text); margin-bottom:0.25rem; }
+.subclase-fan { font-size:0.83rem; color:var(--text-mid); line-height:1.5; }
+
+/* Faction & class select (Tu Personaje step 1/2) */
+.choice-summary {
+  background:var(--gold-pale); border-left:3px solid var(--gold);
+  border-radius:0 var(--r-md) var(--r-md) 0;
+  padding:0.85rem 1.1rem; margin-bottom:1.5rem;
+  display:flex; align-items:center; gap:0.8rem; flex-wrap:wrap;
+}
+.choice-summary-label { font-size:0.7rem; font-weight:700; letter-spacing:0.15em; text-transform:uppercase; color:var(--gold-deep); }
+.choice-summary-value { font-family:'Cormorant Garamond',serif; font-size:1.1rem; font-weight:700; color:var(--text); }
+.choice-summary-change { font-size:0.78rem; font-weight:700; color:var(--gold-deep); cursor:pointer; margin-left:auto; text-decoration:underline; }
+
+/* Backstory form */
+.backstory-form { display:flex; flex-direction:column; gap:1.2rem; }
+.field {
+  background:var(--surface); border:1.5px solid var(--border);
+  border-radius:var(--r-lg); padding:1.2rem;
+}
+.field-label {
+  font-family:'Cormorant Garamond',serif;
+  font-size:1.1rem; font-weight:700; color:var(--text); margin-bottom:0.2rem;
+  display:flex; align-items:center; gap:0.5rem;
+}
+.field-required { color:var(--red); font-size:0.85rem; }
+.field-optional { font-size:0.7rem; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; color:var(--text-muted); }
+.field-hint { font-size:0.85rem; color:var(--text-mid); margin-bottom:0.6rem; line-height:1.55; }
+.field input, .field textarea {
+  width:100%; font-family:'Nunito',sans-serif; font-size:0.95rem;
+  border:1.5px solid var(--border-dark); border-radius:var(--r-md);
+  padding:0.7rem 0.9rem; background:var(--bg); color:var(--text);
+  resize:vertical; line-height:1.55;
+}
+.field input:focus, .field textarea:focus { outline:none; border-color:var(--gold); background:var(--surface); }
+.field textarea { min-height:80px; }
+
+/* Share buttons */
+.share-bar {
+  display:flex; gap:0.7rem; flex-wrap:wrap; justify-content:center;
+  margin-top:2rem; padding-top:2rem; border-top:1px solid var(--border);
+}
+.share-btn {
+  font-family:'Nunito',sans-serif; font-size:0.85rem; font-weight:700;
+  letter-spacing:0.04em; text-transform:uppercase;
+  padding:0.75rem 1.4rem; border-radius:var(--r-pill);
+  border:2px solid var(--gold); background:var(--gold);
+  color:var(--white); cursor:pointer; transition:all var(--t);
+  display:inline-flex; align-items:center; gap:0.5rem;
+}
+.share-btn:hover { background:var(--gold-deep); border-color:var(--gold-deep); transform:translateY(-2px); }
+.share-btn.secondary { background:var(--surface); color:var(--gold-deep); }
+.share-btn.secondary:hover { background:var(--gold-pale); }
+.share-hint { text-align:center; font-size:0.78rem; color:var(--text-muted); margin-top:0.6rem; min-height:1em; transition:opacity var(--t); }
+.share-hint.success { color:var(--green); font-weight:700; }
+.share-hint.error { color:var(--red); }
+
+/* Character sheet preview (used by html2canvas) */
+.sheet-preview {
+  background:var(--surface); border:2px solid var(--gold);
+  border-radius:var(--r-lg); padding:2rem; margin:1.5rem 0;
+  box-shadow:var(--shadow);
+}
+.sheet-h {
+  text-align:center; padding-bottom:1.2rem; margin-bottom:1.2rem;
+  border-bottom:2px solid var(--gold);
+}
+.sheet-title { font-family:'Cormorant Garamond',serif; font-size:0.7rem; letter-spacing:0.5em; text-transform:uppercase; color:var(--gold); margin-bottom:0.4rem; }
+.sheet-name { font-family:'Cormorant Garamond',serif; font-size:2rem; font-weight:700; color:var(--text); line-height:1.1; }
+.sheet-meta { display:flex; justify-content:center; gap:1.2rem; margin-top:0.6rem; flex-wrap:wrap; font-size:0.88rem; color:var(--text-mid); }
+.sheet-meta strong { color:var(--gold-deep); }
+.sheet-section { margin-bottom:1.2rem; }
+.sheet-section-label { font-size:0.7rem; font-weight:700; letter-spacing:0.18em; text-transform:uppercase; color:var(--gold-deep); margin-bottom:0.3rem; }
+.sheet-section-value { font-size:0.95rem; color:var(--text); line-height:1.65; }
+
+.cta-row { display:flex; justify-content:flex-end; gap:0.6rem; margin-top:1.5rem; flex-wrap:wrap; }
+.cta-btn {
+  font-family:'Nunito',sans-serif; font-size:0.85rem; font-weight:700;
+  letter-spacing:0.04em; text-transform:uppercase;
+  padding:0.7rem 1.4rem; border-radius:var(--r-pill);
+  border:2px solid transparent; cursor:pointer; transition:all var(--t);
+}
+.cta-btn-primary { background:var(--gold); color:var(--white); border-color:var(--gold); }
+.cta-btn-primary:hover { background:var(--gold-deep); border-color:var(--gold-deep); }
+.cta-btn-ghost { background:transparent; color:var(--text-mid); border-color:var(--border-dark); }
+.cta-btn-ghost:hover { color:var(--text); border-color:var(--gold); }
+
+/* ────────── RESPONSIVE ────────── */
+@media (max-width:720px) {
+  .topnav { padding:0.7rem 1rem; flex-wrap:wrap; }
+  .nav-btn { font-size:0.7rem; padding:0.4rem 0.7rem; }
+  .hero { padding:3rem 1.2rem 2.5rem; }
+  .content-area { padding:1.5rem 1rem 4rem; }
+  .section-top { padding:1.5rem 1rem 0; }
+  .cards-row, .figures-grid, .options-grid, .class-list, .faction-grid { grid-template-columns:1fr; }
+  .compare-grid { grid-template-columns:1fr; }
+  .diff-scale { flex-wrap:wrap; border-radius:var(--r-md); }
+  .diff-item { min-width:30%; }
+  .sub-pill, .step-pill { font-size:0.7rem; padding:0.45rem 0.8rem; }
+  .hab-table { font-size:0.78rem; }
+  .declaration { padding:1.1rem 1.3rem; }
+}
+
+/* Print */
+@media print {
+  .topnav, .share-bar, .cta-row, .section-breadcrumb, .sub-pills, .steps-indicator { display:none !important; }
+  body { background:white !important; }
+  .screen { display:block !important; }
+  .screen:not(.active) { display:none !important; }
+}
+</style>
+</head>
+<body>
+
+<!-- ════════════════════════════════════════════ TOP NAV ════════════════════════════════════════════ -->
+<nav class="topnav">
+  <div class="nav-logo" onclick="showScreen('home')">EPIC <span>QUEST</span></div>
+  <div class="nav-right">
+    <button class="nav-btn" data-nav="mundo" onclick="showScreen('mundo')">🌍 El Mundo</button>
+    <button class="nav-btn" data-nav="juego" onclick="showScreen('juego')">❓ ¿Cómo se juega?</button>
+    <button class="nav-btn" data-nav="personaje" onclick="showScreen('personaje')">🧙 Tu Personaje</button>
+    <a href="editor.html" class="nav-btn" style="text-decoration:none">📋 Clases</a>
+  </div>
+</nav>
+
+<!-- ════════════════════════════════════════════ SCREEN: HOME ════════════════════════════════════════════ -->
+<div class="screen active" id="screen-home">
+  <div class="hero">
+    <div class="hero-eyebrow">Wiki de Avelir</div>
+    <div class="hero-title">EPIC <span>QUEST</span></div>
+    <div class="hero-subtitle">El mundo, las reglas y tu personaje</div>
+    <div class="hero-desc">Una guía interactiva para entrar a Avelir. Explora las facciones, aprende cómo se juega y crea a tu héroe.</div>
+    <div class="hero-choices">
+      <div class="hero-choice" onclick="showScreen('mundo')">
+        <div class="hero-choice-icon">🌍</div>
+        <div class="hero-choice-label">El Mundo</div>
+        <div class="hero-choice-sub">Las 6 facciones de Avelir, sus historias y sus tensiones</div>
+      </div>
+      <div class="hero-choice" onclick="showScreen('juego')">
+        <div class="hero-choice-icon">❓</div>
+        <div class="hero-choice-label">¿Cómo se juega?</div>
+        <div class="hero-choice-sub">Combate, exploración, sinergias y Echo Points</div>
+      </div>
+      <div class="hero-choice" onclick="showScreen('personaje')">
+        <div class="hero-choice-icon">🧙</div>
+        <div class="hero-choice-label">Tu Personaje</div>
+        <div class="hero-choice-sub">Elige facción, clase y construye tu historia</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════ SCREEN: EL MUNDO ════════════════════════════════════════════ -->
+<div class="screen" id="screen-mundo">
+  <div class="section-top">
+    <div class="section-top-inner">
+      <div class="section-breadcrumb" onclick="showScreen('home')">← Inicio</div>
+      <div class="section-heading">
+        <div class="section-heading-icon">🌍</div>
+        <div>
+          <div class="section-heading-title">El Mundo</div>
+          <div class="section-heading-sub">Las seis facciones que mueven Avelir</div>
+        </div>
+      </div>
+      <div class="sub-pills" id="mundo-pills"></div>
+    </div>
+  </div>
+  <div id="mundo-content"></div>
+</div>
+
+<!-- ════════════════════════════════════════════ SCREEN: ¿CÓMO SE JUEGA? ════════════════════════════════════════════ -->
+<div class="screen" id="screen-juego">
+  <div class="section-top">
+    <div class="section-top-inner">
+      <div class="section-breadcrumb" onclick="showScreen('home')">← Inicio</div>
+      <div class="section-heading">
+        <div class="section-heading-icon">❓</div>
+        <div>
+          <div class="section-heading-title">¿Cómo se juega?</div>
+          <div class="section-heading-sub">Las reglas de Epic Quest, en acción</div>
+        </div>
+      </div>
+      <div class="sub-pills">
+        <button class="sub-pill active" onclick="showJuegoMode('combat',this)">⚔️ Combate</button>
+        <button class="sub-pill" onclick="showJuegoMode('explore',this)">🗺️ Fuera de Combate</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- COMBATE -->
+  <div class="subsection active" id="juego-combat">
+    <div class="content-area" style="padding-top:1.5rem">
+      <div class="sub-pills" style="margin-bottom:0">
+        <button class="sub-pill active" onclick="showSub('combat','turno',this)">El Turno</button>
+        <button class="sub-pill" onclick="showSub('combat','habilidades',this)">Habilidades</button>
+        <button class="sub-pill" onclick="showSub('combat','sinergias',this)">Sinergias</button>
+        <button class="sub-pill" onclick="showSub('combat','lair',this)">Lair Actions</button>
+      </div>
+
+      <!-- TURNO -->
+      <div class="subsection active" id="combat-turno" style="margin-top:1.5rem">
+        <div class="en-accion-wrap top">
+          <button class="en-accion-btn open" onclick="toggleEnAccion(this)">
+            <div class="en-accion-label"><span class="en-accion-tag">En Acción</span>Cómo se ve un turno en la mesa</div>
+            <span class="en-accion-arrow">▼</span>
+          </button>
+          <div class="en-accion-body open"><div class="scene-text">
+            <p>El DM señala al jugador-Furia. "Es tu turno." Recibe sus <strong>+2 al inicio</strong> del turno.</p>
+            <p>Mueve a su personaje dos cuadros hacia el enemigo. Le quedan sus <strong>dos acciones</strong>.</p>
+            <p>Primera acción — usa <strong>Ataque Furioso</strong> (cuesta 1 Furia). Va directo a la tabla en su plano actual: Avelir. Tira el <strong>d12</strong>: sale 9 — columna 9-12. Lee: <strong>"4 daño + derriba"</strong>. El enemigo cae al suelo.</p>
+            <p>Segunda acción — usa Ataque Furioso de nuevo (otra 1 Furia). El d12 sale 6 — columna 5-8. Lee: <strong>"3 daño + derriba"</strong>. Golpea al enemigo ya derribado.</p>
+            <p>Todo en menos de dos minutos. El siguiente jugador.</p>
+          </div></div>
+        </div>
+        <p class="intro-text">Cada personaje tiene un movimiento y dos acciones por turno. Simple, rápido, sin esperas largas — y al inicio de cada turno recibes 2 Aen automáticos para gastar.</p>
+        <div class="cards-row">
+          <div class="card" style="border-color:var(--gold)">
+            <div class="card-icon" style="background:var(--gold-pale)">🚶</div>
+            <div class="card-title">1 Movimiento</div>
+            <div class="card-body">Te desplazas por el campo de batalla. Úsalo para acercarte, alejarte o tomar posición estratégica.</div>
+          </div>
+          <div class="card">
+            <div class="card-icon" style="background:#fdecea">⚡</div>
+            <div class="card-title">2 Acciones</div>
+            <div class="card-body">Cada acción puede ser un ataque normal o una habilidad. Cada habilidad cuesta 1 Aen. No hay acciones mayores o menores — solo acciones.</div>
+          </div>
+          <div class="card" style="border-color:var(--green)">
+            <div class="card-icon" style="background:#e8f5ec">✦</div>
+            <div class="card-title">+2 Aen automático</div>
+            <div class="card-body">Al inicio de cada turno recuperas 2 Aen sin gastar nada. El combate respira.</div>
+          </div>
+        </div>
+        <div class="steps">
+          <div class="step"><div class="step-num">1</div><div class="step-content"><div class="step-title">Recibe tu Aen</div><div class="step-desc">Al inicio de tu turno suma +2 Aen automáticos a tu reserva.</div></div></div>
+          <div class="step"><div class="step-num">2</div><div class="step-content"><div class="step-title">Declara tu movimiento</div><div class="step-desc">Dile al DM a dónde te mueves en el mapa.</div></div></div>
+          <div class="step"><div class="step-num">3</div><div class="step-content"><div class="step-title">Elige tus dos acciones</div><div class="step-desc">Ataque normal o habilidad. Cada habilidad descuenta 1 Aen.</div></div></div>
+          <div class="step"><div class="step-num">4</div><div class="step-content"><div class="step-title">Resuelve cada acción</div><div class="step-desc">Si es habilidad con daño: ve a la tabla en tu plano y tira el d12 para ver la columna del efecto (1-4 mínimo · 5-8 estándar · 9-12 máximo). Si es acción libre o skill check: d20 + tu modificador (Cuerpo, Mente o Echo) vs la dificultad.</div></div></div>
+          <div class="step"><div class="step-num">5</div><div class="step-content"><div class="step-title">Narra el resultado</div><div class="step-desc">El DM describe lo que pasa. Tu turno suma a la historia.</div></div></div>
+        </div>
+      </div>
+
+      <!-- HABILIDADES -->
+      <div class="subsection" id="combat-habilidades" style="margin-top:1.5rem">
+        <div class="en-accion-wrap top">
+          <button class="en-accion-btn open" onclick="toggleEnAccion(this)">
+            <div class="en-accion-label"><span class="en-accion-tag">En Acción</span>Cómo se usa una habilidad</div>
+            <span class="en-accion-arrow">▼</span>
+          </button>
+          <div class="en-accion-body open"><div class="scene-text">
+            <p><strong>Escena 1 — habilidad de clase con daño</strong></p>
+            <p>El jugador-Furia usa <strong>Ataque Furioso</strong>. Paga <strong>1 Furia</strong> (su recurso de clase). Va directo a la tabla en su plano (Avelir) y tira el <strong>d12</strong>: sale 9 — columna 9-12. Lee la celda: <strong>"4 daño + derriba"</strong>. Aplica el efecto. No hubo d20 — el daño es inmediato.</p>
+            <p><strong>Escena 2 — acción libre</strong></p>
+            <p>El guardia bloquea la puerta. Otro jugador decide intimidarlo. No es habilidad de clase, es una acción libre — sin costo.</p>
+            <p>"¿Cuerpo, Mente o Echo?" pregunta el DM. "Mente." Dificultad 15. Tira d20: saca 12, más su modificador de 4. Dieciséis. El guardia duda — y abre.</p>
+          </div></div>
+        </div>
+        <p class="intro-text">Tus habilidades definen quién eres en la mesa. Hay dos tipos y ambos funcionan igual dentro y fuera del combate. Cada una cuesta Aen.</p>
+        <div class="compare-grid">
+          <div class="compare-card" style="border-color:var(--gold);background:var(--gold-pale)">
+            <div class="compare-label" style="color:var(--gold-deep)">Siempre disponibles</div>
+            <div class="compare-title">Habilidades de Clase</div>
+            <ul class="compare-list">
+              <li>Cuestan 1 Aen</li>
+              <li>Sin roll previo requerido</li>
+              <li>Definen la identidad de tu clase</li>
+              <li>Funcionan en combate y exploración</li>
+            </ul>
+          </div>
+          <div class="compare-card" style="border-color:var(--red)">
+            <div class="compare-label" style="color:var(--red)">Se desbloquean por nivel</div>
+            <div class="compare-title">Habilidades Heroicas</div>
+            <ul class="compare-list">
+              <li>Cuestan 2 o más Aen</li>
+              <li>Pueden requerir roll de conexión</li>
+              <li>Más poderosas y específicas</li>
+              <li>Se ganan al subir de nivel</li>
+            </ul>
+          </div>
+        </div>
+        <div class="formula">
+          <div class="formula-main">Acciones libres: d20 + Modificador vs Dificultad</div>
+          <div class="formula-sub">
+            <span>💪 Cuerpo — físico</span>
+            <span>🧠 Mente — intelectual</span>
+            <span>✨ Echo — místico</span>
+          </div>
+        </div>
+        <div class="diff-scale">
+          <div class="diff-item" style="background:#e8f5e9"><div class="diff-num" style="color:#2e7d32">5</div><div class="diff-label" style="color:#2e7d32">Trivial</div></div>
+          <div class="diff-item" style="background:#f1f8e9"><div class="diff-num" style="color:#558b2f">10</div><div class="diff-label" style="color:#558b2f">Retador</div></div>
+          <div class="diff-item" style="background:#fff3e0"><div class="diff-num" style="color:#e65100">15</div><div class="diff-label" style="color:#e65100">Difícil</div></div>
+          <div class="diff-item" style="background:#fdecea"><div class="diff-num" style="color:#c62828">20</div><div class="diff-label" style="color:#c62828">Muy difícil</div></div>
+          <div class="diff-item" style="background:#f3e5f5"><div class="diff-num" style="color:#6a1b9a">30+</div><div class="diff-label" style="color:#6a1b9a">Imposible</div></div>
+        </div>
+        <div class="highlight" style="border-left-color:var(--gold);background:var(--gold-pale)">
+          <div class="highlight-title">Habilidades de clase con daño — sin d20</div>
+          <div class="highlight-body">Cuando usas una habilidad de clase con daño, pagas su costo en Aen y vas directo a la tabla en tu plano. Tiras <strong>1d12</strong> para determinar la columna del efecto: <strong>1-4 mínimo</strong>, <strong>5-8 estándar</strong>, <strong>9-12 máximo</strong>. El daño es inmediato — no hay roll para conectar.</div>
+        </div>
+      </div>
+
+      <!-- SINERGIAS -->
+      <div class="subsection" id="combat-sinergias" style="margin-top:1.5rem">
+        <div class="en-accion-wrap top">
+          <button class="en-accion-btn open" onclick="toggleEnAccion(this)">
+            <div class="en-accion-label"><span class="en-accion-tag">En Acción</span>Cómo se ve una Sinergia en la mesa</div>
+            <span class="en-accion-arrow">▼</span>
+          </button>
+          <div class="en-accion-body open"><div class="scene-text">
+            <p>Le toca al jugador-Furia. Ve que el jefe está débil y que tres compañeros <strong>aún no han pasado</strong> en esta ronda.</p>
+            <p>"Sinergia." Los mira. Los tres aceptan ceder su turno cuando les toque.</p>
+            <p>Son cuatro en total — Sinergia Estándar, sin costo extra. Cada compañero declara qué habilidad aporta — uno potencia el daño, otro aplica una condición, otro da ventaja.</p>
+            <p>Las habilidades convergen en su ataque. Va a la tabla de <strong>Ataque Furioso</strong> con todos los efectos sumados. Tira el <strong>d12</strong>: sale 12 — columna 9-12. Lee la celda: <strong>"4 daño + derriba"</strong>, más todos los efectos que aportaron los compañeros. El jefe cae.</p>
+            <p>Es el momento más épico de la sesión.</p>
+          </div></div>
+        </div>
+        <p class="intro-text">La mecánica más épica de Epic Quest. Cuando le toca a un jugador, puede llamar a sus amigos que aún no han pasado para potenciar su ataque. Requiere comunicación, creatividad y coordinación.</p>
+        <div class="highlight" style="border-left-color:var(--red);background:#fdecea">
+          <div class="highlight-title" style="color:var(--red)">La idea central</div>
+          <div class="highlight-body">Solo el <strong>jugador activo</strong> (al que le toca) puede iniciar una Sinergia. Llama a compañeros que <strong>aún no han pasado</strong> en esta ronda. Ellos sacrifican su turno futuro y aportan una habilidad. El ataque final lo ejecuta el jugador activo, con todos los efectos sumados.</div>
+        </div>
+        <div class="compare-grid">
+          <div class="compare-card" style="border-color:var(--gold);background:var(--gold-pale)">
+            <div class="compare-label" style="color:var(--gold-deep)">2 a 5 jugadores</div>
+            <div class="compare-title">Sinergia Estándar</div>
+            <ul class="compare-list">
+              <li>Sin costo de Aen extra</li>
+              <li>Los participantes ceden su turno cuando les toque</li>
+              <li>No puede ser interrumpida</li>
+              <li>Disponible cuando quieran</li>
+            </ul>
+          </div>
+          <div class="compare-card" style="border-color:var(--red)">
+            <div class="compare-label" style="color:var(--red)">6 a 10 jugadores</div>
+            <div class="compare-title">Sinergia Extendida</div>
+            <ul class="compare-list">
+              <li>Cada participante paga Aen adicional</li>
+              <li>El costo escala con el tamaño del grupo</li>
+              <li>Reservada para momentos climáticos</li>
+              <li>El superataque definitivo</li>
+            </ul>
+          </div>
+        </div>
+        <div class="formula" style="background:#fdecea;border-color:var(--red)">
+          <div class="formula-main" style="color:var(--red)">Costo — Sinergia Extendida</div>
+          <div class="formula-sub">
+            <span>6 → 1 Aen c/u</span><span>7 → 2 Aen</span><span>8 → 3 Aen</span><span>9 → 4 Aen</span><span>10 → 5 Aen c/u</span>
+          </div>
+        </div>
+        <div class="steps">
+          <div class="step"><div class="step-num">1</div><div class="step-content"><div class="step-title">El jugador activo declara Sinergia</div><div class="step-desc">Solo quien tiene el turno puede iniciar. Mira a sus compañeros que aún no han pasado en esta ronda.</div></div></div>
+          <div class="step"><div class="step-num">2</div><div class="step-content"><div class="step-title">Llama a los amigos disponibles</div><div class="step-desc">Cada compañero elegido acepta ceder su turno futuro. Los que ya pasaron en esta ronda no pueden participar.</div></div></div>
+          <div class="step"><div class="step-num">3</div><div class="step-content"><div class="step-title">Cada amigo aporta una habilidad</div><div class="step-desc">Declaran qué habilidad de su clase suman al ataque. Aquí está la creatividad — pueden potenciar daño, aplicar condiciones o dar ventaja.</div></div></div>
+          <div class="step"><div class="step-num">4</div><div class="step-content"><div class="step-title">El jugador activo ejecuta</div><div class="step-desc">Va a la tabla de su habilidad con todos los efectos sumados. Tira el d12 para la columna. El grupo narra el momento juntos.</div></div></div>
+        </div>
+      </div>
+
+      <!-- LAIR ACTIONS -->
+      <div class="subsection" id="combat-lair" style="margin-top:1.5rem">
+        <div class="en-accion-wrap top">
+          <button class="en-accion-btn open" onclick="toggleEnAccion(this)">
+            <div class="en-accion-label"><span class="en-accion-tag">En Acción</span>Cómo se ve una Lair Action</div>
+            <span class="en-accion-arrow">▼</span>
+          </button>
+          <div class="en-accion-body open"><div class="scene-text">
+            <p>El grupo lleva tres minutos discutiendo qué hacer. El DM dice, tranquilo: "El mundo no espera."</p>
+            <p>Los tres lacayos caídos se incorporan. Sus heridas se cerraron.</p>
+            <p>La situación que parecía resuelta vuelve a ser urgente. El grupo deja de discutir y actúa.</p>
+          </div></div>
+        </div>
+        <p class="intro-text">El escenario tiene su propio turno. Las Lair Actions son la manera en que el mundo reacciona — independientemente de lo que el grupo haga o deje de hacer.</p>
+        <div class="highlight">
+          <div class="highlight-title">¿Qué son?</div>
+          <div class="highlight-body">El DM activa una Lair Action cuando el mundo necesita reaccionar. No son un castigo — son el mundo viviendo su propia historia.</div>
+        </div>
+        <div class="cards-row">
+          <div class="card"><div class="card-icon" style="background:#fdecea">❤️‍🔥</div><div class="card-title">Recuperar fuerzas</div><div class="card-body">El enemigo recupera vitalidad o elimina una condición negativa que el grupo le aplicó.</div></div>
+          <div class="card"><div class="card-icon" style="background:var(--gold-pale)">⬆️</div><div class="card-title">Mejorar habilidades</div><div class="card-body">El entorno o el antagonista se potencia. Sus ataques son más peligrosos.</div></div>
+          <div class="card"><div class="card-icon" style="background:#fdecea">👥</div><div class="card-title">Convocar refuerzos</div><div class="card-body">Llegan nuevos enemigos al campo de batalla. La situación escala.</div></div>
+          <div class="card"><div class="card-icon" style="background:#e8f0fd">🗺️</div><div class="card-title">Cambiar el escenario</div><div class="card-body">El terreno se transforma. Aparecen obstáculos, trampas o ventajas inesperadas.</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- EXPLORE -->
+  <div class="subsection" id="juego-explore">
+    <div class="content-area" style="padding-top:1.5rem">
+      <div class="sub-pills" style="margin-bottom:0">
+        <button class="sub-pill active" onclick="showSub('explore','escena',this)">La Escena</button>
+        <button class="sub-pill" onclick="showSub('explore','objetivos',this)">Los Objetivos</button>
+        <button class="sub-pill" onclick="showSub('explore','acciones',this)">Resolver Acciones</button>
+        <button class="sub-pill" onclick="showSub('explore','echo',this)">Echo Points</button>
+      </div>
+
+      <!-- LA ESCENA -->
+      <div class="subsection active" id="explore-escena" style="margin-top:1.5rem">
+        <div class="en-accion-wrap top">
+          <button class="en-accion-btn open" onclick="toggleEnAccion(this)">
+            <div class="en-accion-label"><span class="en-accion-tag">En Acción</span>Cómo empieza una Escena</div>
+            <span class="en-accion-arrow">▼</span>
+          </button>
+          <div class="en-accion-body open"><div class="scene-text">
+            <p>El DM se levanta y escribe en el pintarrón. "Pueblo de Maren. Tienen 25 minutos."</p>
+            <p>Debajo escribe tres objetivos. El grupo los lee. Alguien dice "yo voy solo a la torre." Otros tres se organizan para ver al alcalde. Los demás se reparten el mercado.</p>
+            <p>El reloj ya empezó. Nadie se quedó sin nada que hacer.</p>
+          </div></div>
+        </div>
+        <p class="intro-text">Cuando no estás en combate estás en una Escena. Cada Escena tiene un tiempo definido y objetivos claros — el DM los declara en el pintarrón al inicio.</p>
+        <div class="highlight">
+          <div class="highlight-title">Al inicio de cada Escena el DM declara:</div>
+          <div class="highlight-body">El lugar donde están · El tiempo disponible · Los objetivos que deben cumplir antes de que el tiempo se acabe</div>
+        </div>
+        <div class="cards-row">
+          <div class="card" style="border-color:var(--gold)"><div class="card-icon" style="background:var(--gold-pale)">📍</div><div class="card-title">El Lugar</div><div class="card-body">El DM describe dónde están y qué hay disponible para explorar, investigar o interactuar.</div></div>
+          <div class="card"><div class="card-icon" style="background:#fdecea">⏱️</div><div class="card-title">El Tiempo</div><div class="card-body">Hay un cronómetro visible. El mundo reacciona cuando se acaba. Decide rápido y actúa.</div></div>
+          <div class="card" style="border-color:var(--blue)"><div class="card-icon" style="background:#e8f0fd">🎯</div><div class="card-title">Los Objetivos</div><div class="card-body">Lo que el grupo tiene que lograr antes de que el tiempo se acabe. Cada uno puede requerir un mínimo de jugadores.</div></div>
+        </div>
+      </div>
+
+      <!-- OBJETIVOS -->
+      <div class="subsection" id="explore-objetivos" style="margin-top:1.5rem">
+        <div class="en-accion-wrap top">
+          <button class="en-accion-btn open" onclick="toggleEnAccion(this)">
+            <div class="en-accion-label"><span class="en-accion-tag">En Acción</span>Cómo funciona el objetivo personal</div>
+            <span class="en-accion-arrow">▼</span>
+          </button>
+          <div class="en-accion-body open"><div class="scene-text">
+            <p>El grupo está investigando el mercado. El DM llama aparte a un jugador y le susurra algo.</p>
+            <p>"En el puesto de especias hay un hombre que conoce a tu hermano. Sabe dónde está."</p>
+            <p>El jugador regresa a la mesa. Nadie más sabe lo que acaba de recibir. Pero su personaje ahora tiene una razón mucho más urgente para estar ahí.</p>
+          </div></div>
+        </div>
+        <p class="intro-text">Hay tres capas de objetivos operando al mismo tiempo en cada sesión. Las dos primeras son visibles para todos — la tercera es solo tuya.</p>
+        <div class="steps">
+          <div class="step"><div class="step-num">1</div><div class="step-content"><div class="step-title">Objetivo de Sesión</div><div class="step-desc">La misión macro visible en el pintarrón. Lo que el grupo tiene que lograr antes de que termine la sesión completa.</div></div></div>
+          <div class="step"><div class="step-num">2</div><div class="step-content"><div class="step-title">Objetivos de Escena</div><div class="step-desc">Los bullets concretos que dividen al grupo en esta escena específica. Cada objetivo tiene un mínimo de jugadores requeridos.</div></div></div>
+          <div class="step"><div class="step-num">3</div><div class="step-content"><div class="step-title">Objetivo Personal</div><div class="step-desc">El DM te entrega información privada basada en tu backstory. Solo tú lo sabes. Conecta tu historia personal con la aventura.</div></div></div>
+        </div>
+        <div class="highlight">
+          <div class="highlight-title">¿Cómo se organizan los jugadores?</div>
+          <div class="highlight-body">Antes de empezar a explorar, el grupo decide quién va a cada objetivo. Esta conversación es parte del juego — la organización y la negociación tienen valor narrativo.</div>
+        </div>
+      </div>
+
+      <!-- ACCIONES -->
+      <div class="subsection" id="explore-acciones" style="margin-top:1.5rem">
+        <div class="en-accion-wrap top">
+          <button class="en-accion-btn open" onclick="toggleEnAccion(this)">
+            <div class="en-accion-label"><span class="en-accion-tag">En Acción</span>Resolver una acción fuera de combate</div>
+            <span class="en-accion-arrow">▼</span>
+          </button>
+          <div class="en-accion-body open"><div class="scene-text">
+            <p>Un jugador quiere descifrar los símbolos grabados en la base de la torre. El DM pregunta: "¿Cuerpo, Mente o Echo?"</p>
+            <p>"Echo. Voy a sentir su resonancia."</p>
+            <p>El DM pone <strong>dificultad 20</strong> — es muy difícil. Tira d20 y saca 14, más su Echo de 5. Diecinueve. Cerca pero no pasa.</p>
+            <p>El DM le revela algo a medias: los símbolos son anteriores a cualquier facción conocida. Pero no entiende qué dicen. La torre no fue construida por el mago — él solo la encontró.</p>
+          </div></div>
+        </div>
+        <p class="intro-text">La mecánica de resolución es exactamente la misma que en combate. No hay lista fija de acciones — dile al DM qué quieres hacer y él fija la dificultad.</p>
+        <div class="formula">
+          <div class="formula-main">d20 + Modificador vs Nivel de Dificultad</div>
+          <div class="formula-sub">
+            <span>Dile al DM qué quieres hacer</span><span>Elige Cuerpo, Mente o Echo</span><span>Tira y suma tu modificador</span>
+          </div>
+        </div>
+        <div class="diff-scale">
+          <div class="diff-item" style="background:#e8f5e9"><div class="diff-num" style="color:#2e7d32">5</div><div class="diff-label" style="color:#2e7d32">Trivial</div></div>
+          <div class="diff-item" style="background:#f1f8e9"><div class="diff-num" style="color:#558b2f">10</div><div class="diff-label" style="color:#558b2f">Retador</div></div>
+          <div class="diff-item" style="background:#fff3e0"><div class="diff-num" style="color:#e65100">15</div><div class="diff-label" style="color:#e65100">Difícil</div></div>
+          <div class="diff-item" style="background:#fdecea"><div class="diff-num" style="color:#c62828">20</div><div class="diff-label" style="color:#c62828">Muy difícil</div></div>
+          <div class="diff-item" style="background:#f3e5f5"><div class="diff-num" style="color:#6a1b9a">30+</div><div class="diff-label" style="color:#6a1b9a">Imposible</div></div>
+        </div>
+        <div class="cards-row" style="margin-top:1.5rem">
+          <div class="card"><div class="card-icon" style="background:#fdecea">💪</div><div class="card-title">Usa Cuerpo</div><div class="card-body">Escalar, correr, forzar una puerta, intimidar físicamente, resistir una trampa.</div></div>
+          <div class="card"><div class="card-icon" style="background:#e8f0fd">🧠</div><div class="card-title">Usa Mente</div><div class="card-body">Convencer a alguien, descifrar un texto, recordar información, investigar un lugar.</div></div>
+          <div class="card"><div class="card-icon" style="background:#e8f5ec">✨</div><div class="card-title">Usa Echo</div><div class="card-body">Detectar magia, comunicarte con espíritus, sentir la energía de un lugar, resistir una ilusión.</div></div>
+        </div>
+      </div>
+
+      <!-- ECHO POINTS -->
+      <div class="subsection" id="explore-echo" style="margin-top:1.5rem">
+        <div class="en-accion-wrap top">
+          <button class="en-accion-btn open" onclick="toggleEnAccion(this)">
+            <div class="en-accion-label"><span class="en-accion-tag">En Acción</span>Cómo se gana y se gasta un Echo Point</div>
+            <span class="en-accion-arrow">▼</span>
+          </button>
+          <div class="en-accion-body open"><div class="scene-text">
+            <p>Un jugador ve que su compañero está a punto de caer. Sin pensarlo, le cede sus dos acciones del turno para que el otro pueda escapar.</p>
+            <p>El DM levanta la vista. "Echo Point." No dijo nada más. No necesitaba.</p>
+            <p>Tres escenas después el mismo jugador necesita persuadir a una sacerdotisa. Tira d20 + Mente — saca 14. La dificultad era 18.</p>
+            <p>Gasta su Echo Point. Tira <strong>1d4</strong>: sale 4. Suma a su tirada: dieciocho exacto. La sacerdotisa lo escucha. Justo lo que necesitaba.</p>
+          </div></div>
+        </div>
+        <p class="intro-text">Los Echo Points son la mecánica más especial de Epic Quest. No los ganas siendo el más fuerte — los ganas siendo el más noble.</p>
+        <div class="highlight" style="border-left-color:var(--green);background:#e8f5ec">
+          <div class="highlight-title" style="color:var(--green)">¿Cómo funcionan?</div>
+          <div class="highlight-body">El DM te da un Echo Point cuando haces algo heroico, empático o de sacrificio. Cada Echo Point vale un dado d4 que puedes sumar a cualquier tirada — excepto para daño directo.</div>
+        </div>
+        <div class="echo-grid">
+          <div class="echo-card"><span class="echo-icon">🛡️</span><div class="echo-title">Acto Heroico</div><div class="echo-desc">Te pones en riesgo para proteger al grupo o a alguien más vulnerable.</div></div>
+          <div class="echo-card"><span class="echo-icon">🤲</span><div class="echo-title">Sacrificio</div><div class="echo-desc">Cedes tu turno, tu Aen o tu ventaja para que otro pueda triunfar.</div></div>
+          <div class="echo-card"><span class="echo-icon">💬</span><div class="echo-title">Empatía</div><div class="echo-desc">Validas los sentimientos o la historia de otro personaje en la mesa.</div></div>
+          <div class="echo-card"><span class="echo-icon">✨</span><div class="echo-title">Nobleza</div><div class="echo-desc">Practicas habilidades socioemocionales genuinas durante la sesión.</div></div>
+        </div>
+        <div class="cards-row" style="margin-top:0.5rem">
+          <div class="card" style="border-color:var(--green)"><div class="card-icon" style="background:#e8f5ec">🎲</div><div class="card-title">¿Cómo los uso?</div><div class="card-body">Tiras el d4 y sumas el resultado a cualquier acción que no sea daño directo — potenciar una tirada de habilidad, resistir una condición, apoyar a un compañero.</div></div>
+          <div class="card"><div class="card-icon" style="background:var(--gold-pale)">⏳</div><div class="card-title">¿Cuánto duran?</div><div class="card-body">Solo durante la sesión activa. Al terminar se resetean. Úsalos antes de que se acabe la sesión.</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════ SCREEN: TU PERSONAJE ════════════════════════════════════════════ -->
+<div class="screen" id="screen-personaje">
+  <div class="section-top">
+    <div class="section-top-inner">
+      <div class="section-breadcrumb" onclick="showScreen('home')">← Inicio</div>
+      <div class="section-heading">
+        <div class="section-heading-icon">🧙</div>
+        <div>
+          <div class="section-heading-title">Tu Personaje</div>
+          <div class="section-heading-sub">Elige facción, clase y construye tu historia</div>
+        </div>
+      </div>
+      <div class="steps-indicator">
+        <button class="step-pill active" id="step-pill-1" onclick="showCharStep(1)"><span>1</span> Facción</button>
+        <button class="step-pill" id="step-pill-2" onclick="showCharStep(2)"><span>2</span> Clase</button>
+        <button class="step-pill" id="step-pill-3" onclick="showCharStep(3)"><span>3</span> Kit</button>
+        <button class="step-pill" id="step-pill-4" onclick="showCharStep(4)"><span>4</span> Backstory</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="subsection active" id="char-step-1">
+    <div class="content-area">
+      <p class="intro-text">Elige la facción de tu personaje y responde la pregunta de origen. Tu respuesta desbloquea tu <strong>feat de origen</strong> — una ventaja social fuera de combate que te da ventaja en tiradas de Cuerpo, Mente o Echo cuando el contexto social coincide con el entorno de tu facción.</p>
+      <div class="sub-pills standalone faction-pills" id="char-faction-pills"></div>
+      <div id="char-faction-content"></div>
+    </div>
+  </div>
+
+  <div class="subsection" id="char-step-2">
+    <div class="content-area">
+      <div id="char-faction-summary"></div>
+      <p class="intro-text">Elige tu clase. Cada una define tus habilidades, tu recurso heroico y tres caminos posibles (subclases).</p>
+      <div class="class-list" id="char-class-list"></div>
+      <div id="char-class-detail" style="margin-top:2rem"></div>
+    </div>
+  </div>
+
+  <div class="subsection" id="char-step-3">
+    <div class="content-area">
+      <div id="char-kit-summary-top"></div>
+      <p class="intro-text">Elige tu kit. Define <strong>con qué</strong> operas en combate — tu equipo, estilo y habilidad única. Cada kit ajusta tu vitalidad y regeneración de Aen, y trae una habilidad de equipo (cuesta 3 Aen) con un drawback narrativo.</p>
+      <div class="sub-pills standalone kit-arch-pills" id="kit-arch-pills"></div>
+      <div id="kit-grid"></div>
+      <div id="kit-cta-row"></div>
+    </div>
+  </div>
+
+  <div class="subsection" id="char-step-4">
+    <div class="content-area">
+      <div id="char-summary-top"></div>
+      <p class="intro-text">Estos campos son opcionales — pero entre más llenes, más viva será tu historia. Solo el nombre es obligatorio.</p>
+      <div class="backstory-form">
+        <div class="field">
+          <div class="field-label">Nombre del Personaje <span class="field-required">*</span></div>
+          <div class="field-hint">¿Cómo te llamas en Avelir?</div>
+          <input type="text" id="bs-nombre" maxlength="80" placeholder="Ej. Kaelen Brassard" oninput="saveBackstory()">
+        </div>
+        <div class="field">
+          <div class="field-label">Tu Ciudad <span class="field-optional">opcional</span></div>
+          <div class="field-hint">¿De dónde vienes? Un nombre, una región, un puerto, una aldea olvidada.</div>
+          <input type="text" id="bs-ciudad" maxlength="120" oninput="saveBackstory()">
+        </div>
+        <div class="field">
+          <div class="field-label">Tu Profesión <span class="field-optional">opcional</span></div>
+          <div class="field-hint">¿Qué hacías antes de ser aventurero? Lo que pagabas con tus manos.</div>
+          <input type="text" id="bs-profesion" maxlength="120" oninput="saveBackstory()">
+        </div>
+        <div class="field">
+          <div class="field-label">Tu Momento Heroico <span class="field-optional">opcional</span></div>
+          <div class="field-hint">¿Cuándo todo cambió? El día que dejaste de ser quien eras.</div>
+          <textarea id="bs-heroico" maxlength="500" oninput="saveBackstory()"></textarea>
+        </div>
+        <div class="field">
+          <div class="field-label">Tu Primera Derrota <span class="field-optional">opcional</span></div>
+          <div class="field-hint">¿Cuál fue tu primer fracaso? Aquello que aún cargas.</div>
+          <textarea id="bs-derrota" maxlength="500" oninput="saveBackstory()"></textarea>
+        </div>
+        <div class="field">
+          <div class="field-label">Tu Hoy <span class="field-optional">opcional</span></div>
+          <div class="field-hint">¿Qué hace tu personaje cuando empieza la campaña?</div>
+          <textarea id="bs-hoy" maxlength="500" oninput="saveBackstory()"></textarea>
+        </div>
+        <div class="field">
+          <div class="field-label">Un Secreto <span class="field-optional">opcional</span></div>
+          <div class="field-hint">¿Qué sabe tu personaje que nadie más sabe?</div>
+          <textarea id="bs-secreto" maxlength="400" oninput="saveBackstory()"></textarea>
+        </div>
+        <div class="field">
+          <div class="field-label">Una Conexión <span class="field-optional">opcional</span></div>
+          <div class="field-hint">¿A quién le debes algo? Un favor, una vida, una promesa.</div>
+          <textarea id="bs-conexion" maxlength="400" oninput="saveBackstory()"></textarea>
+        </div>
+      </div>
+
+      <div id="char-sheet-preview"></div>
+
+      <div class="share-bar">
+        <button class="share-btn" onclick="downloadPDF()">📄 Descargar PDF</button>
+        <button class="share-btn secondary" id="btn-share" onclick="sharePNG()">📸 Compartir / Foto</button>
+        <button class="share-btn secondary" onclick="copyToClipboard()">📋 Copiar texto</button>
+      </div>
+      <p class="share-hint" id="share-hint"></p>
+
+      <!-- iOS long-press image fallback -->
+      <div id="image-fallback" style="display:none; margin-top:1.5rem">
+        <div class="highlight">
+          <div class="highlight-title">Para guardar la imagen</div>
+          <div class="highlight-body">Mantén presionada la imagen y selecciona <strong>"Guardar imagen"</strong> o <strong>"Añadir a Fotos"</strong>.</div>
+        </div>
+        <img id="image-fallback-img" style="width:100%; border-radius:var(--r-lg); border:2px solid var(--gold); margin-top:1rem">
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Keyword tooltip / sheet -->
+<div class="kw-tooltip" id="kw-tooltip"></div>
+<div class="kw-sheet-backdrop" id="kw-sheet-backdrop" onclick="closeKwSheet()"></div>
+<div class="kw-sheet" id="kw-sheet">
+  <div class="kw-sheet-handle"></div>
+  <div class="kw-sheet-title" id="kw-sheet-title"></div>
+  <div class="kw-sheet-body" id="kw-sheet-body"></div>
+</div>
+
+<script>
+
+
+// Convert editor format to wiki format
+function convertEditorClass(ec) {
+  function cellToText(cell) {
+    if (!cell) return '';
+    if (typeof cell === 'string') return cell;
+    var p = [];
+    if (cell.d) p.push(cell.d + ' daño');
+    if (cell.c) cell.c.forEach(function(x) { p.push(x.toLowerCase()); });
+    if (cell.e) cell.e.forEach(function(x) { p.push(x); });
+    if (cell.db) cell.db.forEach(function(x) { p.push(x); });
+    return p.join(', ');
+  }
+  function buildCost(aen, echo) {
+    var s = '';
+    if (aen) s += aen + ' Aen';
+    if (echo) { if (s) s += ' + '; s += 'Echo'; if (echo==='alto') s+=' alto'; else if (echo==='máx'||echo==='max') s+=' máx'; else if (echo==='concentrado') s+=' concentrado'; }
+    return s || '';
+  }
+  return {
+    id: ec.id,
+    icon: ec.icon,
+    name: ec.name,
+    rama: ec.type || ec.rama || 'Fuerza',
+    recurso: ec.resource || ec.recurso || '',
+    fantasia: ec.fantasy || ec.fantasia || '',
+    habilidades: (ec.abilities || ec.habilidades || []).map(function(a, i) {
+      // Handle both editor and wiki format
+      if (a.rows) return { num: a.num || i+1, name: a.name, desc: a.desc||'', heroica: a.heroica||false, rows: a.rows };
+      return {
+        num: i + 1,
+        name: a.name,
+        desc: a.desc || '',
+        heroica: a.type === 'Heroica',
+        rows: (a.table || []).map(function(r) {
+          if (r.length === 5) return r; // old wiki format
+          return [r[0], buildCost(r[1], r[2]), cellToText(r[3]), cellToText(r[4]), cellToText(r[5])];
+        })
+      };
+    }),
+    subclases: (ec.subclasses || ec.subclases || []).map(function(s) {
+      return { name: s.name, fantasia: s.fantasy || s.fantasia || '' };
+    })
+  };
+}
+
+const _EMBEDDED = {"factions":[{"id":"cheran","name":"Teocracia de Cherán","subtitle":"Los Engari — El Pueblo que Ara","icon":"🔥","color":"#9b2020","declaration":"Nuestro dios es el único. Él proveerá. Los infieles serán purificados. El fuego de Engar se esparcirá ante el retumbar de nuestra caballería.","news":[{"type":"text","value":"El"},{"type":"kw","value":"Palan'Nur","def":"El Ungido — el líder supremo de Cherán, ejecutor de la voluntad de Engar Ab'Calen."},{"type":"text","value":"agoniza entre rezos y conspiraciones."},{"type":"kw","value":"An'Fahal","def":"El heredero de la cuarta generación. El amanecer de algo nuevo — o el eco de algo que se apaga."},{"type":"text","value":"se prepara para tomar el trono. Mientras tanto, los"},{"type":"kw","value":"Sar'Qaim","def":"Los jihadistas del Palan'Shar. Los que ejecutan en la oscuridad. La guerra sagrada es un mandato de Engar — no una opción."},{"type":"text","value":"marchan hacia el norte ejecutando la purga. El"},{"type":"kw","value":"Palan'Shar","def":"El Concilio sagrado de Cherán — donde conviven y compiten las facciones filosóficas que definen el alma del imperio."},{"type":"text","value":"se mueve en las sombras."}],"historia":["Los Engari nacieron en las estepas como una banda de mercenarios fanáticos que nadie tomaba en serio. Lo que los diferenciaba de cualquier otro pueblo era su fe — una devoción total a Engar Ab'Calen, el dios que ara la tierra para que brote la vida.","Generación tras generación, esa fe los fue forjando. El primer Palan'Nur unificó las tribus dispersas y absorbió el Imperio de las Estepas mediante mestizaje y conquista. El segundo lo convirtió en un verdadero imperio. El tercero lo llevó a su cúspide institucional.","Hoy son la potencia más temida de Avelir — no porque tengan el ejército más grande, sino porque tienen algo más peligroso: la certeza absoluta de que están en lo correcto."],"gobierno":"<strong>Teocracia.</strong> El <strong>Palan'Nur</strong> — el Ungido — ejecuta la voluntad divina. El <strong>Palan'Shar</strong> — el Concilio de sacerdotes — define qué es esa voluntad. Cuatro facciones compiten dentro del Palan'Shar: los <strong>Amin</strong> (ortodoxos), los <strong>Palan'Umbar</strong> (gnósticos), los <strong>Amin'Kalam</strong> (iconoclastas) y los <strong>Sar'Qaim</strong> (jihadistas).","figuras":[{"name":"Anan'Nur — El Tercer Palan'Nur","desc":"El Ungido que está agonizando. Llevó a Cherán a su cúspide institucional. Su muerte marcará el inicio de una nueva era."},{"name":"An'Fahal — El Cuarto Palan'Nur","desc":"El heredero. Su nombre significa \"el amanecer\". Rodeado de generales extraordinarios que cargan el peso que él aún no puede sostener."},{"name":"Temürel — Abu'Amin","desc":"El Abuelo. El general más respetado de Cherán sin título formal. Conoció al segundo Palan'Nur en su infancia. Tiene un plan que nadie conoce completamente."},{"name":"Los Sar'Qaim","desc":"Los que ejecutan en la oscuridad. La facción más radical del Palan'Shar. Marchan hacia el norte purificando todo a su paso."}],"geopolitica":"Cherán está en su momento más poderoso — y más inestable. La transición al cuarto Palan'Nur está en marcha. Las facciones del Palan'Shar compiten por influencia. Los Sar'Qaim avanzan hacia el norte ejecutando purgas que están despertando una resistencia que nadie calculó. Aetharion los llama el nuevo demonio. Los Pueblos del norte empiezan a unirse contra ellos.","identidad":"Creciste en la única verdad que existe — la de Engar Ab'Calen. Tu familia ha servido al Palan'Nur desde que puedes recordar. La fe no es algo que elegiste — es lo que eres. Pero el mundo es más complicado de lo que los sermones del Palan'Shar describen. Y tú lo sabes.","pregunta":"¿Tu fe es tu fuerza o tu cadena?","opciones":[{"icon":"💪","title":"La fe es mi fuerza","desc":"Crees con todo lo que tienes. Esa certeza te hace invencible cuando luchas por algo genuino.","feat":"Convicción de Engar","featDesc":"Tu presencia física como portador de la fe debe imponerse — cuando tu autoridad religiosa necesita ser visible y palpable para los demás.","atributo":"Cuerpo"},{"icon":"🧠","title":"La fe es mi cadena","desc":"Conoces el dogma mejor que nadie — y por eso ves sus grietas. Puedes usar esa duda en otros.","feat":"La Grieta en la Fe","featDesc":"Usas el conocimiento del dogma para persuadir, debatir o influenciar a quienes comparten o cuestionan una fe.","atributo":"Mente"},{"icon":"✨","title":"Yo elijo en qué creer","desc":"Creciste cuestionando. Eso te costó — pero también te dio un don que pocos tienen.","feat":"Ojo del Hereje","featDesc":"Detectas manipulación ideológica, creencias falsas o motivaciones ocultas bajo un manto de fe.","atributo":"Echo"}]},{"id":"vorin","name":"Casa Vorin","subtitle":"El Gremio — La Voz, El Escudo, La Garra","icon":"⚖️","color":"#1a4a7a","declaration":"El comercio es poder. La información es poder. Nosotros tenemos ambos. Todo tiene precio — incluyendo tú.","news":[{"type":"kw","value":"El Gremio","def":"La junta suprema de Casa Vorin — todos los Caëlens activos reunidos. Sus decisiones se toman por consenso. Nadie sabe cuántos son. Nadie sabe quiénes son."},{"type":"text","value":"acaba de mover una cantidad de oro que nadie puede rastrear."},{"type":"kw","value":"Aldren, Voz de Casa Vorin","def":"El título que representa la cara diplomática de Casa Vorin. Las sonrisas que abren puertas."},{"type":"text","value":", fue visto en tres capitales distintas en la misma semana. Se dice que"},{"type":"kw","value":"La Primera Garra","def":"El título más temido de Casa Vorin. El maestro de las sombras. Secretos, inteligencia, vicios ajenos como moneda de cambio. Identidad secreta."},{"type":"text","value":"está activa. Nadie sabe qué está comprando Casa Vorin. Todos deberían estar preocupados."}],"historia":["Casa Vorin comenzó como un linaje élfico guerrero de alta alcurnia que estaba viniendo a menos. Fue Caëlen Vorin'el — el hijo menor, el que nadie miraba — quien vio lo que los demás no podían: que el mundo no necesitaba otro ejército. Necesitaba a alguien que financiara los ejércitos de todos los demás.","Caëlen construyó la institución junto a sus hermanos — cada uno con un poder distinto. Aldren, la diplomacia. Ilvaën, la fuerza. Maëlor, las sombras. Y él, la estrategia que lo unía todo. Hoy esos nombres son títulos hereditarios que se pasan mediante un proceso de adopción e indoctrinación que escandalizó al mundo élfico en su momento — y que hoy es el secreto más admirado y temido de Avelir.","Entrar a Casa Vorin es el sueño de los más ambiciosos. Tu cara cambia. Tu nombre cambia. Tu historia desaparece. Caëlen Vorin'el no solo fundó una institución. Fundó una especie."],"gobierno":"<strong>Corporación hereditaria.</strong> Cuatro divisiones: <strong>Caëlen</strong> (estrategia, identidad secreta), <strong>Aldren — Voz</strong> (diplomacia), <strong>Ilvaën — Escudo</strong> (fuerza militar), <strong>Maëlor — Garra</strong> (inteligencia, identidad secreta). Por encima de todos, <strong>El Gremio</strong> — la junta de Caëlens que decide por consenso.","figuras":[{"name":"Caëlen Vorin'el","desc":"El fundador. El hijo menor que salvó a su familia convirtiéndola de linaje guerrero en corporación mercantil. Su nombre es ahora un título."},{"name":"El Gremio","desc":"La junta suprema. Todos los Caëlens activos reunidos. Nadie sabe cuántos son. Sus decisiones son irreversibles."},{"name":"Aldren — Voz de Casa Vorin","desc":"El rostro diplomático. Hay varios Aldrens activos en el mundo — uno por división territorial. Solo uno es La Primera Voz."},{"name":"Maëlor — Garra de Casa Vorin","desc":"El maestro de las sombras. Identidad secreta. Secretos, inteligencia, vicios ajenos como moneda de cambio."}],"geopolitica":"Casa Vorin invirtió en Aetharion antes de que nadie lo viera venir — y ganaron. Ahora tienen acceso privilegiado a la tecnología militar más avanzada de Avelir. El Gremio se está moviendo en todas las capitales simultáneamente. Nadie sabe qué están comprando. Lo que sí saben todos es que Casa Vorin nunca pierde.","identidad":"Nadie entra a Casa Vorin por accidente. Tú viste la oportunidad y la tomaste. Dejaste atrás tu nombre, tu historia, tu cara. A cambio obtuviste algo que muy pocos tienen — poder real. Pero el proceso no terminó. Nunca termina.","pregunta":"¿Qué estás dispuesto a sacrificar para obtener lo que quieres?","opciones":[{"icon":"🧠","title":"Todo tiene precio, incluyendo yo","desc":"Entendiste el juego completamente. Sabes exactamente qué ofrecer y cuándo.","feat":"El Precio Exacto","featDesc":"Negocias, propones un trato o convences del valor real de algo en cualquier intercambio social.","atributo":"Mente"},{"icon":"✨","title":"Hay cosas que no se venden","desc":"Conoces el sistema desde adentro — y por eso sabes cuándo alguien está operando fuera de él.","feat":"Arquitectura del Poder","featDesc":"Percibes quién tiene el poder real en una situación — los flujos ocultos de influencia que no se declaran abiertamente.","atributo":"Echo"},{"icon":"💪","title":"El precio lo pagan otros","desc":"Aprendiste a sobrevivir en el lugar más peligroso de Avelir — la corte de Casa Vorin.","feat":"Sombra en el Salón","featDesc":"Navegas físicamente espacios de poder donde tu presencia como Casa Vorin abre puertas y crea distancia con quienes preferirían ignorarte.","atributo":"Cuerpo"}]},{"id":"escarlata","name":"La Orden Escarlata","subtitle":"Los que Sangran por los Demás","icon":"🛡️","color":"#8b1a1a","declaration":"No servimos a ningún rey. No tenemos sede. No tenemos ejército. Solo tenemos un código y la voluntad de morir por él. Llegamos cuando nadie más llega.","news":[{"type":"text","value":"Una"},{"type":"kw","value":"hermandad","def":"Las células operativas de la Orden Escarlata. 17-18 hermandades de 20-30 caballeros cada una, dispersas por todo Avelir."},{"type":"text","value":"entera fue destruida en una noche. Los sobrevivientes hablan de criaturas que no pertenecen a este mundo. Por tercera vez en 700 años alguien está convocando"},{"type":"kw","value":"La Mesa Completa","def":"La coalición de todas las hermandades. Solo ha ocurrido dos veces antes. Cuando se convoca, el mundo sabe que algo sin precedente está ocurriendo."},{"type":"text","value":". El"},{"type":"kw","value":"Primero de la Mesa","def":"El líder de cada hermandad de la Orden Escarlata. No hay líder global — solo el Juramento Escarlata une a todas las hermandades."},{"type":"text","value":"de cada hermandad debe responder al llamado."}],"historia":["La Orden Escarlata nació de un acto de desobediencia que fue simultáneamente el más fiel al código que la fundó. Ser Arthantos — el más honorado de su generación — desafió a su institución para defender a un pueblo que nadie más defendería. Ese sacrificio se convirtió en la fundación de algo que lleva 700 años existiendo sin un rey, sin una capital, sin un ejército.","No son muchos. Veinte caballeros de la Orden valen por mil soldados comunes — no porque sean invencibles, sino porque son multiplicadores de fuerza. Llegan, organizan, entrenan y lideran. Cuando la batalla termina, se van.","El mundo los considera anacronismos. El mundo se equivoca."],"gobierno":"<strong>Descentralizado.</strong> 17-18 hermandades independientes unidas por el <strong>Juramento Escarlata</strong>. Cada hermandad tiene un <strong>Primero de la Mesa</strong>. No hay líder global. Tres corrientes internas definen cómo cada hermandad interpreta el Juramento: <strong>Los Tantos</strong> (defienden hasta morir), <strong>Los Platos</strong> (negocian) y <strong>Los Normales</strong> (evalúan).","figuras":[{"name":"Ser Arthantos — El Fundador","desc":"El Galahad de Avelir. El más puro. Hizo el sacrificio máximo 700 años atrás. Su nombre se corrompió en el habla popular — de ahí vienen \"Los Tantos\"."},{"name":"Hemmal — Dios Patrono","desc":"La manifestación divina que se fusionó con Ser Arthantos en su momento final. Los caballeros lo invocan en combate. Su origen es más antiguo y más misterioso de lo que cualquier texto de la Orden describe."},{"name":"Ser Gianni du Mont","desc":"Primero de la Mesa, Los Normales. Defendió Tol Varen junto a Arminio El Dorado. Cuando la batalla terminó, se fue sin despedirse. Hay otros que lo necesitan."},{"name":"El Sobreviviente","desc":"Alguien sobrevivió la destrucción de la hermandad. Está convocando La Mesa Completa. Nadie sabe todavía qué vio exactamente esa noche."}],"geopolitica":"La Orden se desvanece — el mundo político y comercial los dejó obsoletos. Pero precisamente en su momento más débil algo está rompiendo la realidad. Las hermandades que quedan están siendo convocadas. Algunos Primeros de la Mesa dudan si responder. El Juramento Escarlata no deja opción.","identidad":"Elegiste el camino más difícil en un mundo que ya no lo valora. No tienes rey, no tienes hogar, no tienes fortuna. Tienes un código. Y ese código te ha llevado a lugares donde nadie más llega — y te ha costado cosas que nadie más pagaría.","pregunta":"¿Cuándo el mundo te pone frente a una causa imposible — defiendes hasta morir, negocias para salvar lo que puedas, o evalúas si la batalla vale la pena?","opciones":[{"icon":"💪","title":"Los Tantos: Defiendo hasta morir","desc":"El Juramento no tiene excepciones. Punto.","feat":"La Última Palabra","featDesc":"Te impones físicamente para defender a alguien vulnerable — tu presencia como caballero crea autoridad moral visible en la escena.","atributo":"Cuerpo"},{"icon":"🧠","title":"Los Platos: Negocio para salvar lo que puedo","desc":"La paz tiene valor aunque venga de la negociación. Salvar algo es mejor que perderlo todo.","feat":"La Mesa entre Espadas","featDesc":"Propones un acuerdo o mediación en medio de un conflicto — tu código de honor da peso a tus palabras.","atributo":"Mente"},{"icon":"✨","title":"Los Normales: Evalúo si vale la pena","desc":"No toda batalla merece ser peleada. Saber cuál sí es el verdadero arte.","feat":"La Pregunta del Veterano","featDesc":"Lees los riesgos reales, motivaciones profundas o el verdadero costo de una situación antes de actuar.","atributo":"Echo"}]},{"id":"aetharion","name":"Aetharion","subtitle":"El Jardín Eterno — Los Aetheri","icon":"🦅","color":"#1a5276","declaration":"Evolución. Táctica. Estrategia. Temple. Magia al servicio de la victoria. El Jardín Eterno no para de crecer.","news":[{"type":"text","value":"Las águilas de"},{"type":"kw","value":"Aetharion","def":"El Jardín Eterno. Imperio naciente fundado por Alendi Galathas. La fuerza militar más innovadora de Avelir."},{"type":"text","value":"acaban de humillar al Primer Imperio en"},{"type":"kw","value":"Tol Marin","def":"Fortaleza pre-Rompimiento del Velo. Escenario de la batalla más importante de la era actual — donde Aetharion demostró que puede derrotar a Urushan en campo abierto."},{"type":"text","value":". Por primera vez en siglos alguien le ganó a"},{"type":"kw","value":"Urushan","def":"El Primer Imperio. El más antiguo de Avelir. Sus naves son artefactos de otra era. Su corte es el lugar más peligroso del mundo."},{"type":"text","value":"en batalla abierta. El mundo no volverá a ser el mismo."}],"historia":["Durante siglos las casas heráldicas que hoy forman Aetharion vivieron fragmentadas y humilladas bajo el peso del Primer Imperio. Generaciones enteras crecieron con la deuda de una derrota que no cometieron. Hasta que Alendi Galathas — Cúmulo de Estrellas, Casa Gal'Calad — vio lo que nadie más podía ver: que la humillación podía convertirse en combustible.","Alendi unificó las casas heráldicas no por conquista sino por legitimidad — era uno de ellos. Junto a Anariel, su compañera de toda la vida y arquitecta de su ventaja tecnológica, construyó el ejército más innovador que Avelir ha visto. No ganaron por número ni por territorio — ganaron porque mientras los demás seguían peleando con las mismas tácticas de siempre, Aetharion estaba reinventando completamente la guerra."],"gobierno":"<strong>República Militar.</strong> El <strong>Arkhon Galas</strong> lidera. Los <strong>Primarcas</strong> comandan las legiones. Los <strong>Cónsules</strong> representan a las casas heráldicas. <strong>Heraldin Galas</strong> controla tecnología y alquimia bélica. La balanza siempre inclina hacia lo militar.","figuras":[{"name":"Alendi Galathas — Arkhon Galas","desc":"El Cúmulo de Estrellas. Fundador de Aetharion. A los 14 años huyó de la humillación de su familia. Vagó por el mundo hasta convertirse en el arquitecto del Jardín Eterno."},{"name":"Anariel — Heraldin Galas","desc":"La Heraldo. Arquitecta de la ventaja tecnológica de Aetharion. Brillante para la magia. Nadie entiende completamente de dónde viene su poder."},{"name":"Los Primarcas","desc":"Los generales de Aetharion. Cada uno un genio en su dominio. Toman decisiones en campo sin esperar órdenes. Juntos son la mente más peligrosa de Avelir."},{"name":"Los Galadrim","desc":"La guardia élite del Arkhon Galas. Hijos e hijas de las casas heráldicas. El entrenamiento más arduo del mundo. Viven y mueren por los ideales de Alendi."}],"geopolitica":"Aetharion acaba de ganar su batalla más importante. El mundo los mira — algunos con admiración, otros con miedo. Cherán ya los llama el nuevo demonio. Casa Vorin apostó por ellos antes que nadie. Y Urushan, herido y humillado en Tol Marin, no ha dicho su última palabra.","identidad":"Creciste en la humillación de generaciones. Viste cómo el Primer Imperio aplastaba a tu pueblo con deudas y tratados imposibles. Pero Alendi Galathas vio algo que nadie más vio — que la humillación puede convertirse en el ejército más innovador del mundo. Tú eres parte de ese ejército. Eres Aetheri. Y el Jardín Eterno apenas comienza a crecer.","pregunta":"¿Eres leal al hombre o a la institución?","opciones":[{"icon":"🧠","title":"Leal al hombre","desc":"Tu lealtad es a las personas que conoces, no a las ideas abstractas. Cuando alguien merece tu lealtad — la tiene para siempre.","feat":"Vínculo Inquebrantable","featDesc":"Intercedes verbalmente por alguien a quien debes lealtad personal — tu reputación de fidelidad da peso a tu palabra.","atributo":"Mente"},{"icon":"💪","title":"Leal a la institución","desc":"El Jardín Eterno es más grande que cualquier individuo. Alendi lo construyó para que durara más que él. Tú también.","feat":"El Peso del Águila","featDesc":"Tu presencia física como representante de Aetharion establece autoridad — tu porte y disciplina hablan antes que tú.","atributo":"Cuerpo"},{"icon":"✨","title":"Leal a la victoria","desc":"No importa el hombre ni la institución. Importa ganar. Todo lo demás es ruido.","feat":"Lectura del Campo","featDesc":"Identificas el punto de máxima tensión en una situación política o social — el momento o persona que puede cambiar todo.","atributo":"Echo"}]},{"id":"urushan","name":"Urushan","subtitle":"El Primer Imperio — La Tormenta del Mar","icon":"⚓","color":"#1e6b3a","declaration":"El Primer Imperio. La flota más antigua. La tradición más profunda. Llevamos milenios aquí — y seguiremos cuando todos los demás hayan caído.","news":[{"type":"kw","value":"Alarion","def":"Antes Aldric Von Rostov — el almirante más prestigiado de su generación. Cambió su nombre aristocrático por uno solo. Sin apellido. Sin Von. Sin linaje."},{"type":"text","value":"abandonó su nombre, su apellido y su lealtad. Desde las ruinas de"},{"type":"kw","value":"Ashlan","def":"Isla pre-Rompimiento del Velo. Se dice que fue el trono del Emperador. Su nombre data de una época tan antigua que su significado se perdió en el tiempo."},{"type":"text","value":"convoca a"},{"type":"kw","value":"Los Peregrinos","def":"Los seguidores de Alarion. No son rebeldes — son devotos. Eso los hace imposibles de derrotar políticamente."},{"type":"text","value":"."},{"type":"kw","value":"La Tormenta del Mar","def":"Iridel Von Richter — la Emperatriz actual de Urushan. Brillante, maestra de la intriga. Sabe que el colapso es inevitable. Opera de todas formas."},{"type":"text","value":"prepara su respuesta."}],"historia":["Urushan es el primer imperio de Avelir — nacido de las cenizas del cataclismo que rehízo el mundo. Heredaron la flota más extraordinaria que existe — naves forjadas en otra era, imbuidas con un poder que nadie más puede replicar. Con esas naves construyeron el dominio naval más poderoso de Avelir.","Milenios de historia los convirtieron en los maestros de la intriga, la política y la manipulación. Nadie en Avelir mueve los hilos del poder con más elegancia que la aristocracia de Urushan. Nadie muere de vejez en su corte.","La dinastía Von Richter lleva cuatro generaciones en el poder. Bastian Von Richter — el Gran Almirante fundador — derrocó a la dinastía anterior y perfeccionó el arte de la intriga hasta convertirlo en doctrina. Hoy Iridel Von Richter, La Tormenta del Mar, heredó ese legado — junto con una guerra civil que ya comenzó."],"gobierno":"<strong>Matriarcado pragmático.</strong> Las mujeres gobiernan, los hombres guerrean — no por ideología sino por pragmatismo dinástico. La <strong>Emperatriz</strong> lidera. Los <strong>Almirantes</strong> tienen peso político profundo — como los generales romanos. La capital se mueve con cada nueva dinastía. Hoy es <strong>Artesh</strong>.","figuras":[{"name":"Iridel Von Richter — La Tormenta del Mar","desc":"La Emperatriz actual. Brillante, maestra de la intriga. Trata de emular las grandes Reinas del pasado. Sabe que el colapso es inevitable. Opera de todas formas."},{"name":"Alarion","desc":"Antes Aldric Von Rostov. El almirante más prestigiado de su generación. Tuvo una visión que cambió todo. Ahora lidera una rebelión desde Ashlan que el mundo llama locura."},{"name":"Davorel Von Kersig","desc":"El Almirante Leal. Amigo de Alarion desde la Escuela Naval Real. Frío, calculado, brillante. Comanda las fuerzas de Iridel contra su amigo sin una sola lágrima."},{"name":"Los Soleados","desc":"Los creyentes del Emperador en Urushan. En un imperio secular, creer te distingue de la mayoría. Con Alarion su número crece — y Iridel lo observa con preocupación."}],"geopolitica":"Urushan acaba de perder en Tol Marin frente a Aetharion — la primera derrota militar en siglos. Internamente Alarion convoca seguidores desde Ashlan mientras Iridel intenta aplastarlo sin crear un mártir. Sus naves milenarias se deterioran lentamente. Y nadie sabe cómo repararlas.","identidad":"Creciste en el lugar más sofisticado y más peligroso de Avelir. Aprendiste desde pequeño que todo es teatro — que detrás de cada sonrisa hay un plan, detrás de cada alianza hay un precio. Eso te hizo brillante. Y también te hizo desconfiar de todo, incluyendo de ti mismo.","pregunta":"¿Crees en algo, o solo calculas?","opciones":[{"icon":"🧠","title":"Solo calculo","desc":"El sentimentalismo es una debilidad. Tú ves lo que otros no pueden ver — los motivos reales detrás de las palabras.","feat":"La Lectura del Poder","featDesc":"Analizas e identificas los motivos reales detrás de las acciones o palabras de alguien en una situación política.","atributo":"Mente"},{"icon":"💪","title":"Creo en algo","desc":"En un mundo de cálculos, actuar por convicción genuina es lo más inesperado — y lo más poderoso.","feat":"La Apuesta Genuina","featDesc":"Actúas con convicción física genuina en un contexto donde todos esperan teatro — tu autenticidad desestabiliza a quienes te calculan.","atributo":"Cuerpo"},{"icon":"✨","title":"Calculo para proteger lo que creo","desc":"No es frialdad — es disciplina al servicio de algo que importa. La intriga como escudo.","feat":"La Sombra que Anticipa","featDesc":"Anticipas los próximos movimientos en un juego de intriga, traición o manipulación política.","atributo":"Echo"}]},{"id":"pueblos","name":"Los Pueblos sin Techo","subtitle":"La Confederación — Arminio El Dorado","icon":"🏕️","color":"#7d6608","declaration":"Sin trono. Sin templo. Sin cadenas. Libres antes que cualquier imperio existiera. Libres cuando todos hayan caído.","news":[{"type":"kw","value":"Arminio El Dorado","def":"Rey de un pequeño reinado de montaña. Vio cómo Cherán destruía a su pueblo. Escapó hacia el norte con los suyos. Ahora convoca a las tribus."},{"type":"text","value":"resistió lo imposible en"},{"type":"kw","value":"Tol Varen","def":"Fortaleza pre-Rompimiento del Velo en las montañas. La roca que permanece. El lugar donde nació la Confederación."},{"type":"text","value":"."},{"type":"kw","value":"La Orden Escarlata","def":"Los caballeros errantes que defienden al desvalido sin importar el enemigo. Llegaron a Tol Varen, multiplicaron la fuerza de Arminio, y partieron en silencio."},{"type":"text","value":"llegó cuando nadie más llegó — y cuando la batalla terminó, se fue. Las montañas del norte despiertan."},{"type":"kw","value":"La Confederación","def":"La coalición de pueblos libres que se unen bajo Arminio El Dorado. No son bárbaros — son resistencia organizada contra la expansión de Cherán."},{"type":"text","value":"crece."}],"historia":["Los Pueblos sin Techo son todo lo que existe entre los imperios. Tribus nómadas, confederaciones emergentes, pueblos costeros, civilizaciones que eligieron la libertad sobre la institución. No tienen un origen único ni una historia común — tienen miles.","Lo que los une en este momento es Arminio El Dorado — un rey que perdió todo a manos de Cherán y que eligió resistir en lugar de desaparecer. Desde las montañas del norte está convocando a pueblos que nunca antes cooperaron, forjando algo nuevo bajo una amenaza común.","La Confederación no tiene agenda cósmica. No sabe de los juegos de poder que se mueven en las capitales de los grandes imperios. Solo sabe que Cherán avanza y que la única respuesta es unirse."],"gobierno":"<strong>Confederación emergente.</strong> Arminio El Dorado como líder central, con la legitimidad de haber resistido lo imposible en Tol Varen. Cada pueblo mantiene su autonomía — la Confederación es una alianza militar, no un imperio. La Orden Escarlata los ayudó una vez. Quizás vuelvan.","figuras":[{"name":"Arminio El Dorado","desc":"Como Vercingetórix — un aristócrata sofisticado operando con recursos limitados contra una máquina imperial. Perdió todo. Eligió resistir. Las montañas lo siguen."},{"name":"Ser Gianni du Mont","desc":"El Primero de la Mesa que llegó a Tol Varen. Multiplicó la fuerza de Arminio y se fue sin despedirse. Arminio nunca lo entendió completamente."},{"name":"Tol Varen","desc":"La fortaleza pre-Rompimiento del Velo donde nació la Confederación. La roca que permaneció cuando todo lo demás caía."},{"name":"Los Pueblos de las Montañas","desc":"Decenas de tribus y reinados pequeños que empiezan a escuchar a Arminio. Cada uno con su propia historia, su propia cultura, su propia razón para resistir."}],"geopolitica":"La Confederación crece pero Cherán es vastamente más poderosa. La victoria en Tol Varen fue simbólica — demostró que es posible resistir, no que sea fácil ganar. Arminio sabe que necesita más aliados. Los imperios establecidos lo observan con interés — algunos con esperanza, otros calculando cómo usarlo.","identidad":"No tienes el peso de ninguna institución. No debes lealtad a ningún título. El mundo que construyeron los imperios no fue construido para ti — o tú decidiste que no era suficiente. Eres libre. Esa libertad tiene un precio que muy pocos están dispuestos a pagar.","pregunta":"¿De qué huyes o hacia qué caminas?","opciones":[{"icon":"💪","title":"Huyo de algo","desc":"Sobreviviste en los márgenes. Conoces cada ruta de escape, cada escondite, cada recurso que otros no ven.","feat":"Los Caminos que Nadie Ve","featDesc":"Navegas físicamente un entorno desconocido buscando rutas alternativas, refugios o recursos que nadie más puede encontrar.","atributo":"Cuerpo"},{"icon":"✨","title":"Camino hacia algo","desc":"Tienes un objetivo. Eso te hace más peligroso que cualquier soldado entrenado — porque nada te detiene.","feat":"El Propósito Claro","featDesc":"Tu determinación hacia un objetivo es tan palpable que los demás la sienten — los obstáculos humanos se apartan sin necesidad de confrontación.","atributo":"Echo"},{"icon":"🧠","title":"Solo camino","desc":"No perteneces a ningún bando — y todos lo saben. Eso te abre puertas que nadie más puede abrir.","feat":"El que No Tiene Dueño","featDesc":"Te mueves socialmente entre grupos hostiles entre sí — tu naturaleza no alineada hace que cada facción te vea como potencialmente propio.","atributo":"Mente"}]}],"kits":[{"num":1,"name":"ASALTO","id":"asalto","icon":"🪓","archetype":"tanque","fantasia_role":"Vikingo","fantasia":"Vikingo — carga imparable, hacha y escudo, fuerza bruta","bonus_vit":8,"bonus_aen":0,"habilidad_name":"Carga","habilidad_desc":"Corres 6 casillas en línea recta. Haces 1d6 de daño a cada enemigo que impactas en el camino.","drawback":"Quedas expuesto — el siguiente ataque contra ti tiene ventaja hasta tu próximo turno. Te lanzaste sin protección.","costo":"3 Aen"},{"num":2,"name":"FILO","id":"filo","icon":"🗡️","archetype":"dano","fantasia_role":"Samurái","fantasia":"Samurái — precisión letal, un solo corte que lo decide todo","bonus_vit":5,"bonus_aen":1,"habilidad_name":"Triple Corte","habilidad_desc":"Haces tres ataques de 1d6 a tres enemigos distintos en una sola acción.","drawback":"Pierdes todo el movimiento este turno. Necesitabas estar completamente quieto para ejecutar el corte perfecto.","costo":"3 Aen"},{"num":3,"name":"DAGAS","id":"dagas","icon":"🥷","archetype":"dano","fantasia_role":"Ninja","fantasia":"Ninja — golpe invisible, el enemigo no sabe de dónde vino","bonus_vit":2,"bonus_aen":2,"habilidad_name":"Golpe desde las Sombras","habilidad_desc":"Solo activable fuera de la línea de visión del objetivo. Ataque con ventaja y daño doble.","drawback":"Pierdes tu Echo por 1 turno. Suprimiste tu presencia en los planos para volverlo invisible — ahora estás desconectado temporalmente.","costo":"3 Aen"},{"num":4,"name":"CORSARIO","id":"corsario","icon":"🏴‍☠️","archetype":"dano","fantasia_role":"Pirata","fantasia":"Pirata — caótico, oportunista, siempre listo para disparar","bonus_vit":5,"bonus_aen":1,"habilidad_name":"Disparo Oportunista","habilidad_desc":"Cuando un enemigo se mueve dentro de tu línea de visión, puedes interrumpir su movimiento con un ataque a distancia de 1d6. Si impacta, el enemigo pierde el resto de su movimiento ese turno.","drawback":"No puedes realizar ataques a distancia en tu siguiente turno. La pistola necesita recargarse.","costo":"3 Aen"},{"num":5,"name":"BASTIÓN","id":"bastion","icon":"🏰","archetype":"tanque","fantasia_role":"Caballero","fantasia":"Caballero — el muro que no se mueve, la protección absoluta","bonus_vit":10,"bonus_aen":0,"habilidad_name":"Muro de Escudo","habilidad_desc":"Absorbes todo el daño dirigido a un aliado adyacente durante 1 ronda completa.","drawback":"No puedes moverte mientras está activo. Estás plantado. Si te fuerzan a moverte, la habilidad se cancela.","costo":"3 Aen"},{"num":6,"name":"GLADIADOR","id":"gladiador","icon":"🤺","archetype":"dano","fantasia_role":"Gladiador","fantasia":"Gladiador — combate como espectáculo, armas dobles, velocidad","bonus_vit":5,"bonus_aen":1,"habilidad_name":"Golpe Doble","habilidad_desc":"Dos ataques de 1d6 rápidos al mismo objetivo o a dos objetivos adyacentes distintos.","drawback":"El segundo ataque siempre tiene desventaja. La velocidad sacrifica la precisión.","costo":"3 Aen"},{"num":7,"name":"HALCÓN","id":"halcon","icon":"🏹","archetype":"control","fantasia_role":"Cazador","fantasia":"Cazador — paciencia, preparación, control del terreno","bonus_vit":4,"bonus_aen":1,"habilidad_name":"Trampa","habilidad_desc":"Colocas una trampa invisible en una casilla visible. El primer enemigo que la pise recibe 1d6 de daño y queda inmovilizado 1 turno. La trampa permanece activa hasta activarse o hasta tu siguiente turno.","drawback":"Pierdes tu movimiento completo este turno. Necesitabas arrodillarte para colocarla con precisión.","costo":"3 Aen"},{"num":8,"name":"RAÍZ","id":"raiz","icon":"🍃","archetype":"soporte","fantasia_role":"Druida","fantasia":"Druida — curación natural, conectado a la tierra de Avelir","bonus_vit":3,"bonus_aen":2,"habilidad_name":"Curación Natural","habilidad_desc":"Restauras d8 de Vitalidad a un aliado visible. Si el aliado estaba por debajo de la mitad de su Vitalidad máxima, restauras d12 en vez de d8.","drawback":"Recibes 1d4 de daño. Canalizaste la energía natural de Avelir a través de tu propio cuerpo.","costo":"3 Aen"},{"num":9,"name":"COLMILLO","id":"colmillo","icon":"🐺","archetype":"tanque","fantasia_role":"Hombre Lobo","fantasia":"Hombre Lobo — transformación bestial, instinto puro","bonus_vit":7,"bonus_aen":0,"habilidad_name":"Furia Bestial","habilidad_desc":"Atacas simultáneamente a todos los enemigos adyacentes con 1d6 de daño. Cada enemigo golpeado recibe la condición Sangrado: pierde 1 Vitalidad por turno durante 2 turnos.","drawback":"No puedes usar habilidades de clase el siguiente turno. Eres puro instinto — el control planar desaparece temporalmente.","costo":"3 Aen"},{"num":10,"name":"CONDUCTO","id":"conducto","icon":"🪄","archetype":"soporte","fantasia_role":"Mago Arcano","fantasia":"Mago Arcano — eres el canal, no la fuente. Amplificación pura.","bonus_vit":0,"bonus_aen":3,"habilidad_name":"Canalización Amplificada","habilidad_desc":"Tu siguiente habilidad de clase o heroica sube un tier de plano sin pagar el costo adicional. Debes usarla en este mismo turno o el efecto se pierde.","drawback":"Echo -1 por 2 turnos. Sobrecalentaste el canal. Tu conexión con los planos está temporalmente debilitada.","costo":"3 Aen"},{"num":11,"name":"CRISOL","id":"crisol","icon":"⚗️","archetype":"soporte","fantasia_role":"Alquimista","fantasia":"Alquimista — versatilidad, mezclas, preparación táctica","bonus_vit":2,"bonus_aen":2,"habilidad_name":"Poción","habilidad_desc":"Al activarla, elige uno de tres efectos: - **Curar:** Restaura d6 de Vitalidad a un aliado - **Dañar:** Hace d6 de daño a un enemigo - **Condicionar:** Aplica una condición al objetivo (ralentizado, asustado o debilitado — 1 turno)","drawback":"Solo funciona en objetivos adyacentes. Requieres contacto directo o lanzamiento corto.","costo":"3 Aen"},{"num":12,"name":"JURAMENTO","id":"juramento","icon":"☀️","archetype":"tanque","fantasia_role":"Paladín","fantasia":"Paladín — protección sagrada, sacrificio por los demás","bonus_vit":7,"bonus_aen":1,"habilidad_name":"Imposición","habilidad_desc":"Tocas a un aliado: restauras d6 de Vitalidad y eliminas una condición negativa activa. Si el aliado estaba a 0 Vitalidad, lo levantas con 1 Vitalidad.","drawback":"Recibes la mitad del daño que representaba la condición eliminada. Absorbiste su dolor.","costo":"3 Aen"},{"num":13,"name":"BERSERKER","id":"berserker","icon":"💢","archetype":"tanque","fantasia_role":"Berserker","fantasia":"Berserker — el dolor se convierte en poder. Cuanto más te golpean, más peligroso eres.","bonus_vit":6,"bonus_aen":0,"habilidad_name":"Frenesi","habilidad_desc":"Activas el frenesi. Por cada golpe que recibes durante esta ronda, tu siguiente ataque suma +2 de daño acumulativo. Si recibes 3 o más golpes, tu siguiente ataque derriba automáticamente.","drawback":"Mientras el frenesi está activo, no puedes usar habilidades de clase. La rabia bloquea el control planar.","costo":"3 Aen"},{"num":14,"name":"CUERVO","id":"cuervo","icon":"🪶","archetype":"control","fantasia_role":"Asesino","fantasia":"Asesino — veneno lento, muerte inevitable","bonus_vit":2,"bonus_aen":2,"habilidad_name":"Veneno","habilidad_desc":"Aplicas veneno a tu arma o al objetivo directamente. El enemigo queda Envenenado: pierde 1 Aen por turno durante 2 turnos. Si el objetivo ya no tiene Aen, recibe 1 de daño por turno en vez.","drawback":"Pierdes tu movimiento este turno. Preparar el veneno requiere concentración y manos quietas.","costo":"3 Aen"},{"num":15,"name":"ZEN","id":"zen","icon":"☯️","archetype":"control","fantasia_role":"Monje","fantasia":"Monje — flujo perfecto, mente clara, cuerpo como arma","bonus_vit":4,"bonus_aen":1,"habilidad_name":"Golpe Paralizante","habilidad_desc":"Un golpe preciso a un punto vital. El objetivo pierde 1 de sus 2 acciones en su siguiente turno. Si el d20 resulta en 17 o más, pierde ambas acciones.","drawback":"Solo funciona sin armas equipadas. La técnica requiere manos completamente libres.","costo":"3 Aen"}]};
+const DATA = { factions: _EMBEDDED.factions, classes: [], kits: _EMBEDDED.kits };
+
+// Load classes from data.json
+(function() {
+  fetch('data.json?t=' + Date.now())
+    .then(function(r) { return r.json(); })
+    .then(function(d) {
+      DATA.classes = (d.classes || []).map(convertEditorClass);
+      console.log('Classes loaded from data.json:', DATA.classes.length);
+      // Re-render if already on class screen
+      if (typeof renderClasses === 'function') try { renderClasses(); } catch(e) {}
+    })
+    .catch(function(err) {
+      console.warn('Could not load data.json, using fallback');
+    });
+  // Fallback: embedded classes
+  DATA.classes = _EMBEDDED.fallbackClasses || [];
+})();const state = {
+  selectedFaction: null,
+  selectedFactionOption: null,
+  selectedClass: null,
+  selectedKit: null,
+  backstory: {},
+};
+
+/* Universal baseline — class doesn't define base HP, so we use a baseline for combined totals */
+const BASE_HP = 20;
+const BASE_AEN_REGEN = 2;
+
+const KIT_ARCH = {
+  tanque:  { icon:'🛡️', label:'Tanque',  color:'#8b1a1a' },
+  dano:    { icon:'⚔️', label:'Daño',    color:'#b8860b' },
+  control: { icon:'🎯', label:'Control', color:'#1a4a7a' },
+  soporte: { icon:'💚', label:'Soporte', color:'#1e6b3a' },
+};
+
+let kitFilter = 'all';
+
+/* ─── NAV ─── */
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById('screen-' + id).classList.add('active');
+  document.querySelectorAll('.nav-btn').forEach(b => {
+    b.classList.toggle('active', b.dataset.nav === id);
+  });
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function showSub(screen, sub, btn) {
+  const root = btn.closest('.subsection') ? btn.closest('.subsection').parentElement : document;
+  // Limit to siblings of the same group
+  const group = btn.parentElement;
+  group.querySelectorAll('.sub-pill').forEach(p => p.classList.remove('active'));
+  btn.classList.add('active');
+  // Find sibling subsections under the same .content-area
+  const area = btn.closest('.content-area');
+  if (area) {
+    area.querySelectorAll(':scope > .subsection').forEach(s => s.classList.remove('active'));
+  }
+  const target = document.getElementById(screen + '-' + sub);
+  if (target) target.classList.add('active');
+}
+
+function showJuegoMode(mode, btn) {
+  document.querySelectorAll('#screen-juego > .section-top .sub-pill').forEach(p => p.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('#screen-juego > .subsection').forEach(s => s.classList.remove('active'));
+  document.getElementById('juego-' + mode).classList.add('active');
+}
+
+function toggleEnAccion(btn) {
+  const body = btn.nextElementSibling;
+  const isOpen = btn.classList.contains('open');
+  btn.classList.toggle('open', !isOpen);
+  body.classList.toggle('open', !isOpen);
+}
+
+/* ─── EL MUNDO ─── */
+function renderMundo() {
+  // Pills
+  const pillsEl = document.getElementById('mundo-pills');
+  pillsEl.innerHTML = DATA.factions.map((f, i) =>
+    `<button class="sub-pill${i===0?' active':''}" onclick="showFaction('${f.id}',this)">${f.icon} ${f.name.replace('Teocracia de ','').replace('La Orden ','').replace('Los Pueblos sin ','Pueblos sin ').replace('Casa ','')}</button>`
+  ).join('');
+
+  // Content blocks
+  const contentEl = document.getElementById('mundo-content');
+  contentEl.innerHTML = DATA.factions.map((f, i) =>
+    `<div class="subsection${i===0?' active':''}" id="faction-${f.id}" style="--fc:${f.color}">
+      <div class="content-area">
+        <div class="faction-detail">
+          <div class="faction-detail-head">
+            <div class="faction-detail-icon">${f.icon}</div>
+            <div>
+              <div class="faction-detail-name">${f.name}</div>
+              <div class="faction-detail-sub">${f.subtitle}</div>
+            </div>
+          </div>
+
+          <div class="section-block">
+            <div class="section-label">Declaración</div>
+            <div class="declaration">${escapeHTML(f.declaration)}</div>
+          </div>
+
+          <div class="section-block">
+            <div class="section-label">La noticia más importante</div>
+            <p class="news-text">${renderNews(f.news, f.id)}</p>
+          </div>
+
+          <div class="section-block">
+            <div class="section-label">Historia breve</div>
+            <div class="history-text">${f.historia.map(p => `<p>${escapeHTML(p)}</p>`).join('')}</div>
+          </div>
+
+          <div class="section-block">
+            <div class="section-label">Tipo de gobierno</div>
+            <p class="government-text">${f.gobierno}</p>
+          </div>
+
+          <div class="section-block">
+            <div class="section-label">Figuras clave</div>
+            <div class="figures-grid">
+              ${f.figuras.map(fig => `
+                <div class="figure-card">
+                  <div class="figure-name">${escapeHTML(fig.name)}</div>
+                  <p class="figure-desc">${escapeHTML(fig.desc)}</p>
+                </div>`).join('')}
+            </div>
+          </div>
+
+          <div class="section-block">
+            <div class="section-label">Situación geopolítica</div>
+            <p class="geo-text">${escapeHTML(f.geopolitica)}</p>
+          </div>
+
+          <div class="section-block">
+            <div class="section-label">Identidad personal</div>
+            <p class="identity-text">${escapeHTML(f.identidad)}</p>
+            <div class="question-box">
+              <div class="question-text">${escapeHTML(f.pregunta)}</div>
+            </div>
+            <div class="options-grid">
+              ${f.opciones.map(o => `
+                <div class="option-card" data-attr="${o.atributo||''}">
+                  <div class="option-icon">${o.icon}</div>
+                  ${o.atributo ? `<div class="option-attr-badge attr-${o.atributo.toLowerCase()}">Ventaja en ${o.atributo}</div>` : ''}
+                  <div class="option-title">${escapeHTML(o.title)}</div>
+                  <p class="option-desc">${escapeHTML(o.desc)}</p>
+                  <div class="feat-box">
+                    <div class="feat-name">${escapeHTML(o.feat)}</div>
+                    <p class="feat-desc">${escapeHTML(o.featDesc)}</p>
+                  </div>
+                </div>`).join('')}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>`
+  ).join('');
+}
+
+function renderNews(parts, factionId) {
+  return parts.map((p, i) => {
+    if (p.type === 'text') return ' ' + escapeHTML(p.value) + ' ';
+    return ` <span class="kw" data-faction="${factionId}" onclick="openKw(event,this)" data-kw="${escapeAttr(p.value)}" data-def="${escapeAttr(p.def)}">${escapeHTML(p.value)}</span> `;
+  }).join('');
+}
+
+function showFaction(id, btn) {
+  document.querySelectorAll('#mundo-pills .sub-pill').forEach(p => p.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('#mundo-content .subsection').forEach(s => s.classList.remove('active'));
+  document.getElementById('faction-' + id).classList.add('active');
+}
+
+/* ─── KEYWORD TOOLTIP / SHEET ─── */
+function openKw(e, el) {
+  e.stopPropagation();
+  const kw = el.dataset.kw;
+  const def = el.dataset.def;
+  const isMobile = window.innerWidth <= 720;
+  if (isMobile) {
+    document.getElementById('kw-sheet-title').textContent = kw;
+    document.getElementById('kw-sheet-body').textContent = def;
+    document.getElementById('kw-sheet').classList.add('show');
+    document.getElementById('kw-sheet-backdrop').classList.add('show');
+  } else {
+    const tip = document.getElementById('kw-tooltip');
+    tip.innerHTML = `<strong>${escapeHTML(kw)}</strong>${escapeHTML(def)}`;
+    const rect = el.getBoundingClientRect();
+    tip.style.left = Math.min(rect.left + window.scrollX, window.innerWidth - 360) + 'px';
+    tip.style.top = (rect.bottom + window.scrollY + 6) + 'px';
+    tip.classList.add('show');
+  }
+}
+function closeKwSheet() {
+  document.getElementById('kw-sheet').classList.remove('show');
+  document.getElementById('kw-sheet-backdrop').classList.remove('show');
+}
+document.addEventListener('click', (e) => {
+  if (!e.target.classList.contains('kw')) {
+    document.getElementById('kw-tooltip').classList.remove('show');
+  }
+});
+
+/* ─── TU PERSONAJE — Step 1 (Facción + Pregunta) ─── */
+function shortFactionName(name) {
+  return name
+    .replace('Teocracia de ', '')
+    .replace('La Orden ', '')
+    .replace('Los Pueblos sin ', 'Pueblos sin ')
+    .replace('Casa ', '');
+}
+
+function renderCharFactions() {
+  // Render pills
+  const pillsEl = document.getElementById('char-faction-pills');
+  if (!pillsEl) return;
+  pillsEl.innerHTML = DATA.factions.map(f => `
+    <button class="sub-pill ${state.selectedFaction===f.id?'active':''}" style="--fc:${f.color}" onclick="selectFaction('${f.id}')">
+      ${f.icon} ${shortFactionName(f.name)}
+    </button>`).join('');
+
+  // Render content
+  const contentEl = document.getElementById('char-faction-content');
+  if (!state.selectedFaction) {
+    contentEl.innerHTML = `<div class="faction-empty-hint">Elige tu facción arriba para comenzar tu personaje.</div>`;
+    return;
+  }
+  const f = DATA.factions.find(x => x.id === state.selectedFaction);
+  contentEl.innerHTML = renderFactionExpansion(f);
+}
+
+function renderFactionExpansion(f) {
+  return `
+    <div class="faction-expansion-panel" style="--fc:${f.color}">
+      <div class="faction-detail-head" style="--fc:${f.color}">
+        <div class="faction-detail-icon">${f.icon}</div>
+        <div>
+          <div class="faction-detail-name">${f.name}</div>
+          <div class="faction-detail-sub">${f.subtitle}</div>
+        </div>
+      </div>
+      <div class="declaration">${escapeHTML(f.declaration)}</div>
+      <div class="section-block">
+        <div class="section-label">Identidad personal</div>
+        <p class="identity-text">${escapeHTML(f.identidad)}</p>
+        <div class="question-box" style="background:linear-gradient(135deg,${f.color} 0%,var(--gold-deep) 100%)">
+          <div class="question-text">${escapeHTML(f.pregunta)}</div>
+        </div>
+        <p class="expansion-hint">Tu respuesta determina tu <strong>feat de origen</strong> — una ventaja social fuera de combate, en uno de tus tres atributos.</p>
+        <div class="options-grid">
+          ${f.opciones.map((o, i) => `
+            <div class="option-card ${state.selectedFactionOption===i?'selected':''}" data-attr="${o.atributo||''}" onclick="selectFactionOption(${i}, event)">
+              <div class="option-icon">${o.icon}</div>
+              ${o.atributo ? `<div class="option-attr-badge attr-${o.atributo.toLowerCase()}">Ventaja en ${o.atributo}</div>` : ''}
+              <div class="option-title">${escapeHTML(o.title)}</div>
+              <p class="option-desc">${escapeHTML(o.desc)}</p>
+              <div class="feat-box">
+                <div class="feat-name">${escapeHTML(o.feat)}</div>
+                <p class="feat-desc">${escapeHTML(o.featDesc)}</p>
+              </div>
+            </div>`).join('')}
+        </div>
+        ${state.selectedFactionOption !== null
+          ? `<div class="cta-row"><button class="cta-btn cta-btn-primary" onclick="showCharStep(2)">Continuar a Clase →</button></div>`
+          : `<div class="cta-row" style="justify-content:center"><span style="font-size:0.85rem;color:var(--text-muted)">Elige una respuesta para continuar a la clase</span></div>`}
+      </div>
+    </div>`;
+}
+
+function selectFaction(id) {
+  const sameFaction = state.selectedFaction === id;
+  state.selectedFaction = id;
+  if (!sameFaction) state.selectedFactionOption = null; // reset answer when switching
+  persistState();
+  renderCharFactions();
+  updateStepIndicator();
+  // Scroll the expansion content into view smoothly
+  setTimeout(() => {
+    const c = document.getElementById('char-faction-content');
+    if (c) c.scrollIntoView({ behavior:'smooth', block:'start' });
+  }, 80);
+}
+
+function selectFactionOption(i, ev) {
+  if (ev) ev.stopPropagation();
+  state.selectedFactionOption = i;
+  persistState();
+  renderCharFactions();
+  updateStepIndicator();
+}
+
+/* ─── Step 2 (Clase) ─── */
+function renderCharClasses() {
+  const f = DATA.factions.find(x => x.id === state.selectedFaction);
+  const opt = (f && state.selectedFactionOption !== null) ? f.opciones[state.selectedFactionOption] : null;
+  document.getElementById('char-faction-summary').innerHTML = f ? `
+    <div class="choice-summary" style="border-left-color:${f.color}">
+      <span class="choice-summary-label">Tu facción</span>
+      <span class="choice-summary-value">${f.icon} ${f.name}</span>
+      <span class="choice-summary-change" onclick="showCharStep(1)">Cambiar</span>
+    </div>
+    ${opt ? `<div class="choice-summary" style="border-left-color:var(--green)">
+      <span class="choice-summary-label">Tu feat${opt.atributo?' · '+opt.atributo:''}</span>
+      <span class="choice-summary-value">${opt.icon} ${escapeHTML(opt.feat)}</span>
+      <span class="choice-summary-change" onclick="showCharStep(1)">Cambiar</span>
+    </div>` : ''}` : '';
+
+  const listEl = document.getElementById('char-class-list');
+  listEl.innerHTML = DATA.classes.map(c => `
+    <div class="class-card ${state.selectedClass===c.id?'selected':''}" onclick="selectClass('${c.id}')">
+      <div class="class-head">
+        <div class="class-icon">${c.icon}</div>
+        <div>
+          <div class="class-name">${c.name}</div>
+          <div class="class-rama ${c.rama.toLowerCase()}">${c.rama}</div>
+        </div>
+      </div>
+      <p class="class-fantasia">${escapeHTML(c.fantasia)}</p>
+      <p class="class-recurso">Recurso: <strong>${escapeHTML(c.recurso)}</strong></p>
+    </div>`).join('');
+
+  renderClassDetail();
+}
+
+function selectClass(id) {
+  state.selectedClass = id;
+  persistState();
+  renderCharClasses();
+  updateStepIndicator();
+  // Scroll to detail
+  setTimeout(() => {
+    const d = document.getElementById('char-class-detail');
+    if (d) d.scrollIntoView({ behavior:'smooth', block:'start' });
+  }, 80);
+}
+
+/* ─── Step 3 (Kit) ─── */
+function renderCharKits() {
+  const f = DATA.factions.find(x => x.id === state.selectedFaction);
+  const c = DATA.classes.find(x => x.id === state.selectedClass);
+  const opt = (f && state.selectedFactionOption !== null) ? f.opciones[state.selectedFactionOption] : null;
+
+  // Top summary
+  document.getElementById('char-kit-summary-top').innerHTML = `
+    ${f?`<div class="choice-summary" style="border-left-color:${f.color}">
+      <span class="choice-summary-label">Facción</span>
+      <span class="choice-summary-value">${f.icon} ${f.name}</span>
+      <span class="choice-summary-change" onclick="showCharStep(1)">Cambiar</span>
+    </div>`:''}
+    ${c?`<div class="choice-summary">
+      <span class="choice-summary-label">Clase</span>
+      <span class="choice-summary-value">${c.icon} ${c.name}</span>
+      <span class="choice-summary-change" onclick="showCharStep(2)">Cambiar</span>
+    </div>`:''}`;
+
+  // Archetype filter pills
+  const archs = ['all','tanque','dano','control','soporte'];
+  const counts = { all: DATA.kits.length };
+  Object.keys(KIT_ARCH).forEach(a => { counts[a] = DATA.kits.filter(k => k.archetype === a).length; });
+  const pillsEl = document.getElementById('kit-arch-pills');
+  pillsEl.innerHTML = archs.map(a => {
+    const isAll = a === 'all';
+    const meta = isAll ? { icon:'✦', label:'Todos', color:'#8b6914' } : KIT_ARCH[a];
+    return `<button class="sub-pill ${kitFilter===a?'active':''}" style="--fc:${meta.color}" onclick="filterKits('${a}')">${meta.icon} ${meta.label} · ${counts[a]}</button>`;
+  }).join('');
+
+  // Grid
+  const filtered = kitFilter === 'all' ? DATA.kits : DATA.kits.filter(k => k.archetype === kitFilter);
+  const gridEl = document.getElementById('kit-grid');
+  gridEl.innerHTML = `<div class="kit-grid">${filtered.map(k => renderKitCard(k, c)).join('')}</div>`;
+
+  // CTA
+  const cta = document.getElementById('kit-cta-row');
+  if (state.selectedKit) {
+    cta.innerHTML = `
+      <div class="cta-row" style="justify-content:space-between; margin-top:1.5rem; padding-top:1.5rem; border-top:1px solid var(--border)">
+        <button class="cta-btn cta-btn-ghost" onclick="showCharStep(2)">← Volver a Clase</button>
+        <button class="cta-btn cta-btn-primary" onclick="showCharStep(4)">Continuar a Backstory →</button>
+      </div>`;
+  } else {
+    cta.innerHTML = `<p class="hint-text" style="text-align:center;margin-top:1.5rem;color:var(--text-muted);font-size:0.9rem">Elige un kit para continuar</p>`;
+  }
+}
+
+function renderKitCard(k, c) {
+  const isSelected = state.selectedKit === k.id;
+  const arch = KIT_ARCH[k.archetype];
+  const totalHP = BASE_HP + k.bonus_vit;
+  const totalAen = BASE_AEN_REGEN + k.bonus_aen;
+  return `
+    <div class="kit-card ${isSelected?'selected':''}" style="--ac:${arch.color}" onclick="toggleKitExpand('${k.id}',event)">
+      <div class="kit-card-head">
+        <div class="kit-card-icon">${k.icon}</div>
+        <div style="flex:1">
+          <div class="kit-card-name">${escapeHTML(k.name)}</div>
+          <div class="kit-card-role">${escapeHTML(k.fantasia_role)}</div>
+        </div>
+        <span class="kit-arch-badge">${arch.icon}</span>
+      </div>
+      <p class="kit-card-fan">${escapeHTML(k.fantasia)}</p>
+      <div class="kit-stats-row">
+        <span class="kit-stat-badge hp">+${k.bonus_vit} HP</span>
+        <span class="kit-stat-badge aen">+${k.bonus_aen} Aen/turno</span>
+      </div>
+      ${isSelected ? `
+        <div class="kit-expand">
+          <div class="kit-stat-block">
+            <div class="kit-stat-block-label">Con tu clase ${c?c.name:''}</div>
+            <div class="kit-stat-block-row">
+              <span><strong>${totalHP}</strong> HP total</span>
+              <span><strong>+${totalAen}</strong> Aen / turno</span>
+            </div>
+            <p class="kit-stat-note">Baseline universal HP 20 · Aen +2/turno + bonificadores del kit.</p>
+          </div>
+          <div class="kit-hab">
+            <div class="kit-hab-head">
+              <span class="kit-hab-name">${escapeHTML(k.habilidad_name)}</span>
+              <span class="kit-hab-cost">${escapeHTML(k.costo)}</span>
+            </div>
+            <p class="kit-hab-desc">${escapeHTML(k.habilidad_desc)}</p>
+            <div class="kit-drawback">
+              <div class="kit-drawback-label">⚠️ Drawback</div>
+              <p class="kit-drawback-text">${escapeHTML(k.drawback)}</p>
+            </div>
+          </div>
+          <div class="kit-confirm-row">
+            ${isSelected ? `<span class="kit-confirm-check">✓ Elegido</span><button class="cta-btn cta-btn-ghost" onclick="clearKit(event)">Quitar</button>` : ''}
+          </div>
+        </div>` : ''}
+    </div>`;
+}
+
+function filterKits(arch) {
+  kitFilter = arch;
+  renderCharKits();
+}
+
+function toggleKitExpand(id, ev) {
+  if (ev) ev.stopPropagation();
+  // If clicking a kit card and it's not already the selected one, select it
+  if (state.selectedKit !== id) {
+    state.selectedKit = id;
+    persistState();
+    renderCharKits();
+    updateStepIndicator();
+    setTimeout(() => {
+      const sel = document.querySelector('.kit-card.selected');
+      if (sel) sel.scrollIntoView({ behavior:'smooth', block:'center' });
+    }, 80);
+  }
+}
+
+function clearKit(ev) {
+  if (ev) ev.stopPropagation();
+  state.selectedKit = null;
+  persistState();
+  renderCharKits();
+  updateStepIndicator();
+}
+
+function renderClassDetail() {
+  const el = document.getElementById('char-class-detail');
+  if (!state.selectedClass) { el.innerHTML = ''; return; }
+  const c = DATA.classes.find(x => x.id === state.selectedClass);
+  el.innerHTML = `
+    <div class="class-detail">
+      <div class="class-detail-head">
+        <div class="class-detail-icon">${c.icon}</div>
+        <div class="class-detail-info">
+          <div class="class-detail-name">${c.name}</div>
+          <div class="class-detail-fan">${escapeHTML(c.fantasia)}</div>
+          <div class="class-detail-meta">
+            <span class="meta-pill">Rama: ${c.rama}</span>
+            <span class="meta-pill">Recurso: ${escapeHTML(c.recurso)}</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="section-block">
+        <div class="section-label" style="color:var(--gold-deep)">Habilidades base (Nivel 1)</div>
+        ${c.habilidades.map(h => `
+          <div class="habilidad ${h.heroica?'heroica':''}">
+            <div class="hab-head">
+              <div class="hab-num">${h.num}</div>
+              <div class="hab-name">${escapeHTML(h.name)}</div>
+              ${h.heroica?'<span class="hab-tag">Heroica</span>':''}
+            </div>
+            <p class="hab-desc">${escapeHTML(h.desc)}</p>
+            <div class="table-wrap">
+              <table class="hab-table">
+                <thead><tr><th>Plano</th><th>Costo</th><th>1-4</th><th>5-8</th><th>9-12</th></tr></thead>
+                <tbody>${h.rows.map(r => {
+                  const labels = ['Plano','Costo','1-4','5-8','9-12'];
+                  return `<tr>${r.slice(0,5).map((cell,i) => `<td data-label="${labels[i]}">${escapeHTML(cell)}</td>`).join('')}</tr>`;
+                }).join('')}</tbody>
+              </table>
+            </div>
+          </div>`).join('')}
+      </div>
+
+      <div class="section-block">
+        <div class="section-label" style="color:var(--gold-deep)">Subclases (Nivel 2+)</div>
+        <p class="intro-text" style="margin-bottom:0.8rem">Al nivel 2 eliges uno de estos caminos especializados.</p>
+        <div class="subclases-list">
+          ${c.subclases.map(s => `
+            <div class="subclase-item">
+              <div class="subclase-name">${escapeHTML(s.name)}</div>
+              <div class="subclase-fan">${escapeHTML(s.fantasia)}</div>
+            </div>`).join('')}
+        </div>
+      </div>
+
+      <div class="cta-row">
+        <button class="cta-btn cta-btn-ghost" onclick="showCharStep(1)">← Volver a Facción</button>
+        <button class="cta-btn cta-btn-primary" onclick="showCharStep(3)">Continuar a Kit →</button>
+      </div>
+    </div>`;
+}
+
+/* ─── Step 4 (Backstory) ─── */
+function renderCharStep4() {
+  const f = DATA.factions.find(x => x.id === state.selectedFaction);
+  const c = DATA.classes.find(x => x.id === state.selectedClass);
+  const k = DATA.kits.find(x => x.id === state.selectedKit);
+  const opt = (f && state.selectedFactionOption !== null) ? f.opciones[state.selectedFactionOption] : null;
+  document.getElementById('char-summary-top').innerHTML = `
+    ${f?`<div class="choice-summary" style="border-left-color:${f.color}">
+      <span class="choice-summary-label">Facción</span>
+      <span class="choice-summary-value">${f.icon} ${f.name}</span>
+      <span class="choice-summary-change" onclick="showCharStep(1)">Cambiar</span>
+    </div>`:''}
+    ${opt?`<div class="choice-summary" style="border-left-color:var(--green)">
+      <span class="choice-summary-label">Feat${opt.atributo?' · '+opt.atributo:''}</span>
+      <span class="choice-summary-value">${opt.icon} ${escapeHTML(opt.feat)}</span>
+      <span class="choice-summary-change" onclick="showCharStep(1)">Cambiar</span>
+    </div>`:''}
+    ${c?`<div class="choice-summary">
+      <span class="choice-summary-label">Clase</span>
+      <span class="choice-summary-value">${c.icon} ${c.name}</span>
+      <span class="choice-summary-change" onclick="showCharStep(2)">Cambiar</span>
+    </div>`:''}
+    ${k?`<div class="choice-summary" style="border-left-color:var(--gold)">
+      <span class="choice-summary-label">Kit</span>
+      <span class="choice-summary-value">${k.icon} ${escapeHTML(k.name)}</span>
+      <span class="choice-summary-change" onclick="showCharStep(3)">Cambiar</span>
+    </div>`:''}`;
+  renderSheetPreview();
+}
+
+function saveBackstory() {
+  state.backstory = {
+    nombre: document.getElementById('bs-nombre').value.trim(),
+    ciudad: document.getElementById('bs-ciudad').value.trim(),
+    profesion: document.getElementById('bs-profesion').value.trim(),
+    heroico: document.getElementById('bs-heroico').value.trim(),
+    derrota: document.getElementById('bs-derrota').value.trim(),
+    hoy: document.getElementById('bs-hoy').value.trim(),
+    secreto: document.getElementById('bs-secreto').value.trim(),
+    conexion: document.getElementById('bs-conexion').value.trim(),
+  };
+  persistState();
+  renderSheetPreview();
+}
+
+function renderSheetPreview() {
+  const el = document.getElementById('char-sheet-preview');
+  if (!el) return;
+  const bs = state.backstory || {};
+  if (!bs.nombre) { el.innerHTML = ''; return; }
+  const f = DATA.factions.find(x => x.id === state.selectedFaction);
+  const c = DATA.classes.find(x => x.id === state.selectedClass);
+  const k = DATA.kits.find(x => x.id === state.selectedKit);
+  const opt = (f && state.selectedFactionOption !== null) ? f.opciones[state.selectedFactionOption] : null;
+  const totalHP = k ? (BASE_HP + k.bonus_vit) : null;
+  const totalAen = k ? (BASE_AEN_REGEN + k.bonus_aen) : null;
+  const fields = [
+    ['Ciudad', bs.ciudad],
+    ['Profesión', bs.profesion],
+    ['Momento heroico', bs.heroico],
+    ['Primera derrota', bs.derrota],
+    ['Hoy', bs.hoy],
+    ['Un secreto', bs.secreto],
+    ['Una conexión', bs.conexion],
+  ].filter(([k,v]) => v);
+
+  el.innerHTML = `
+    <div class="sheet-preview" id="sheet-render">
+      <div class="sheet-h">
+        <div class="sheet-title">Epic Quest · Avelir</div>
+        <div class="sheet-name">${escapeHTML(bs.nombre)}</div>
+        <div class="sheet-meta">
+          ${f?`<span>${f.icon} <strong>${escapeHTML(f.name)}</strong></span>`:''}
+          ${c?`<span>${c.icon} <strong>${escapeHTML(c.name)}</strong></span>`:''}
+          ${k?`<span>${k.icon} <strong>${escapeHTML(k.name)}</strong></span>`:''}
+        </div>
+      </div>
+      ${k ? `
+        <div class="sheet-section">
+          <div class="sheet-section-label">Stats con kit</div>
+          <div class="sheet-section-value"><strong>${totalHP}</strong> HP &nbsp;·&nbsp; <strong>+${totalAen}</strong> Aen/turno &nbsp;·&nbsp; Kit: ${escapeHTML(k.habilidad_name)} (${escapeHTML(k.costo)})</div>
+        </div>` : ''}
+      ${opt ? `
+        <div class="sheet-section">
+          <div class="sheet-section-label">Feat de origen ${opt.atributo?`· ${opt.atributo}`:''}</div>
+          <div class="sheet-section-value"><strong>${escapeHTML(opt.feat)}</strong> — ${escapeHTML(opt.featDesc)}</div>
+        </div>` : ''}
+      ${fields.map(([k,v]) => `
+        <div class="sheet-section">
+          <div class="sheet-section-label">${k}</div>
+          <div class="sheet-section-value">${escapeHTML(v)}</div>
+        </div>`).join('')}
+    </div>`;
+}
+
+function showHint(msg, kind) {
+  const el = document.getElementById('share-hint');
+  if (!el) return;
+  el.textContent = msg || '';
+  el.className = 'share-hint' + (kind ? ' '+kind : '');
+}
+
+function buildCharText() {
+  const bs = state.backstory;
+  const f = DATA.factions.find(x => x.id === state.selectedFaction);
+  const c = DATA.classes.find(x => x.id === state.selectedClass);
+  const k = DATA.kits.find(x => x.id === state.selectedKit);
+  const opt = (f && state.selectedFactionOption !== null) ? f.opciones[state.selectedFactionOption] : null;
+  let txt = `═══ ${(bs.nombre||'Sin nombre').toUpperCase()} ═══\nEpic Quest · Avelir\n\n`;
+  if (f) txt += `Facción: ${f.icon} ${f.name}\n`;
+  if (c) txt += `Clase: ${c.icon} ${c.name} (Rama ${c.rama} · Recurso ${c.recurso})\n`;
+  if (k) {
+    const tHP = BASE_HP + k.bonus_vit;
+    const tAen = BASE_AEN_REGEN + k.bonus_aen;
+    txt += `Kit: ${k.icon} ${k.name} (${k.fantasia_role}) — ${tHP} HP · +${tAen} Aen/turno\n`;
+    txt += `Habilidad de kit: ${k.habilidad_name} (${k.costo}) — ${k.habilidad_desc}\n`;
+    txt += `Drawback: ${k.drawback}\n`;
+  }
+  if (opt) txt += `Feat: ${opt.icon} ${opt.feat}${opt.atributo?' ('+opt.atributo+')':''} — ${opt.featDesc}\n`;
+  txt += '\n';
+  const fields = [
+    ['Ciudad', bs.ciudad], ['Profesión', bs.profesion],
+    ['Momento heroico', bs.heroico], ['Primera derrota', bs.derrota],
+    ['Hoy', bs.hoy], ['Un secreto', bs.secreto], ['Una conexión', bs.conexion],
+  ];
+  fields.forEach(([k,v]) => { if (v) txt += `── ${k} ──\n${v}\n\n`; });
+  return txt;
+}
+
+/* PDF GENERATION — usa jsPDF, texto nativo, funciona en todos los dispositivos */
+function downloadPDF() {
+  const bs = state.backstory;
+  if (!bs.nombre) { showHint('Primero agrega el nombre de tu personaje.', 'error'); return; }
+  if (typeof window.jspdf === 'undefined') { showHint('Generador de PDF aún cargando, intenta de nuevo en un segundo.', 'error'); return; }
+
+  showHint('Generando PDF…');
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF({ unit:'pt', format:'letter' });
+  const f = DATA.factions.find(x => x.id === state.selectedFaction);
+  const c = DATA.classes.find(x => x.id === state.selectedClass);
+  const k = DATA.kits.find(x => x.id === state.selectedKit);
+  const opt = (f && state.selectedFactionOption !== null) ? f.opciones[state.selectedFactionOption] : null;
+
+  // Color helpers
+  const gold = [184,134,11]; const goldDeep = [139,100,0];
+  const ink = [42,31,18]; const mid = [90,74,48];
+  const factionColor = f ? hexToRgb(f.color) : gold;
+
+  const W = doc.internal.pageSize.getWidth();
+  const H = doc.internal.pageSize.getHeight();
+  const M = 56; // margin
+  let y = M;
+
+  // Header bar
+  doc.setFillColor(...factionColor);
+  doc.rect(0, 0, W, 8, 'F');
+
+  // Eyebrow
+  doc.setFont('helvetica','bold');
+  doc.setFontSize(8);
+  doc.setTextColor(...gold);
+  doc.text('EPIC QUEST · AVELIR', W/2, M, { align:'center', charSpace:3 });
+  y = M + 24;
+
+  // Name (big serif-style — jsPDF only has Times for serif, use it)
+  doc.setFont('times','bold');
+  doc.setFontSize(32);
+  doc.setTextColor(...ink);
+  const nameLines = doc.splitTextToSize(bs.nombre.toUpperCase(), W - 2*M);
+  nameLines.forEach(line => { doc.text(line, W/2, y, { align:'center' }); y += 32; });
+  y += 8;
+
+  // Faction + Class meta
+  doc.setFont('helvetica','normal');
+  doc.setFontSize(11);
+  doc.setTextColor(...mid);
+  const meta = [];
+  if (f) meta.push(`Facción: ${f.name}`);
+  if (c) meta.push(`Clase: ${c.name} (${c.rama})`);
+  if (c) meta.push(`Recurso: ${c.recurso}`);
+  if (k) meta.push(`Kit: ${k.name}`);
+  if (meta.length) {
+    const metaText = meta.join('  ·  ');
+    const metaLines = doc.splitTextToSize(metaText, W - 2*M);
+    metaLines.forEach(line => { doc.text(line, W/2, y, { align:'center' }); y += 14; });
+  }
+
+  // Stats with kit
+  if (k) {
+    const tHP = 20 + k.bonus_vit;
+    const tAen = 2 + k.bonus_aen;
+    doc.setFontSize(10);
+    doc.setTextColor(...goldDeep);
+    doc.text(`HP ${tHP}  ·  +${tAen} Aen / turno  ·  Habilidad de kit: ${k.habilidad_name}`, W/2, y, { align:'center' });
+    y += 14;
+  }
+
+  // Divider
+  doc.setDrawColor(...gold);
+  doc.setLineWidth(1);
+  doc.line(M, y, W-M, y);
+  y += 24;
+
+  // Fields
+  const fields = [];
+  if (opt) fields.push([opt.atributo ? `Feat de origen · ${opt.atributo}` : 'Feat de origen', `${opt.feat} — ${opt.featDesc}`]);
+  fields.push(
+    ['Ciudad', bs.ciudad],
+    ['Profesión', bs.profesion],
+    ['Momento heroico', bs.heroico],
+    ['Primera derrota', bs.derrota],
+    ['Hoy', bs.hoy],
+    ['Un secreto', bs.secreto],
+    ['Una conexión', bs.conexion],
+  );
+  const filteredFields = fields.filter(([k,v]) => v);
+
+  filteredFields.forEach(([label, value]) => {
+    if (y > H - M - 60) { doc.addPage(); y = M; }
+    // Label
+    doc.setFont('helvetica','bold');
+    doc.setFontSize(8);
+    doc.setTextColor(...goldDeep);
+    doc.text(label.toUpperCase(), M, y, { charSpace:1.5 });
+    y += 14;
+    // Value
+    doc.setFont('helvetica','normal');
+    doc.setFontSize(11);
+    doc.setTextColor(...ink);
+    const valueLines = doc.splitTextToSize(value, W - 2*M);
+    valueLines.forEach(line => {
+      if (y > H - M - 14) { doc.addPage(); y = M; }
+      doc.text(line, M, y);
+      y += 15;
+    });
+    y += 12;
+  });
+
+  // Footer
+  doc.setFont('helvetica','normal');
+  doc.setFontSize(8);
+  doc.setTextColor(...mid);
+  doc.text('Epic Quest · Avelir', W/2, H - 24, { align:'center' });
+
+  // ───── HABILIDADES SECTION ─────
+  if (c && c.habilidades && c.habilidades.length) {
+    doc.addPage();
+    y = M;
+
+    // Section header bar
+    doc.setFillColor(...factionColor);
+    doc.rect(0, 0, W, 8, 'F');
+
+    doc.setFont('helvetica','bold');
+    doc.setFontSize(8);
+    doc.setTextColor(...gold);
+    doc.text('HABILIDADES DE CLASE', W/2, y, { align:'center', charSpace:3 });
+    y += 22;
+
+    doc.setFont('times','bold');
+    doc.setFontSize(20);
+    doc.setTextColor(...ink);
+    doc.text(c.name, W/2, y, { align:'center' });
+    y += 16;
+
+    doc.setFont('helvetica','normal');
+    doc.setFontSize(10);
+    doc.setTextColor(...mid);
+    doc.text(`Rama ${c.rama} · Recurso ${c.recurso}`, W/2, y, { align:'center' });
+    y += 12;
+
+    if (c.fantasia) {
+      const fanLines = doc.splitTextToSize(c.fantasia, W - 2*M);
+      doc.setFontSize(9);
+      fanLines.forEach(l => { doc.text(l, W/2, y, { align:'center' }); y += 11; });
+    }
+    y += 12;
+
+    doc.setDrawColor(...gold);
+    doc.setLineWidth(1);
+    doc.line(M, y, W-M, y);
+    y += 18;
+
+    // Each habilidad
+    c.habilidades.forEach((h) => {
+      // Pre-estimate space needed (header + desc + table) for page-break decision
+      const descLines = doc.splitTextToSize(h.desc || '', W - 2*M);
+      const headerH = 14 + (descLines.length * 11) + 12;
+      const tableMinH = 20 + (h.rows.length * 30); // rough estimate
+      const totalNeeded = headerH + tableMinH + 16;
+
+      if (y + totalNeeded > H - M - 30) {
+        doc.addPage();
+        y = M;
+      }
+
+      // Habilidad name
+      doc.setFont('helvetica','bold');
+      doc.setFontSize(12);
+      doc.setTextColor(...ink);
+      let nameText = `${h.num}. ${h.name}`;
+      doc.text(nameText, M, y);
+
+      // Heroica tag
+      if (h.heroica) {
+        const nameW = doc.getTextWidth(nameText);
+        doc.setFillColor(...gold);
+        doc.roundedRect(M + nameW + 8, y - 9, 38, 12, 6, 6, 'F');
+        doc.setFont('helvetica','bold');
+        doc.setFontSize(6.5);
+        doc.setTextColor(255,255,255);
+        doc.text('HEROICA', M + nameW + 27, y - 1, { align:'center', charSpace:1 });
+      }
+      y += 14;
+
+      // Description
+      doc.setFont('helvetica','normal');
+      doc.setFontSize(9.5);
+      doc.setTextColor(...mid);
+      descLines.forEach(l => {
+        if (y > H - M - 14) { doc.addPage(); y = M; }
+        doc.text(l, M, y);
+        y += 11;
+      });
+      y += 8;
+
+      // Table
+      y = pdfDrawHabTable(doc, M, y, h.rows, W, H, M);
+      y += 18;
+    });
+  }
+
+  // ───── KIT PAGE ─────
+  if (k) {
+    doc.addPage();
+    y = M;
+
+    // Top bar
+    doc.setFillColor(184,134,11);  // gold
+    doc.rect(0, 0, W, 8, 'F');
+
+    doc.setFont('helvetica','bold');
+    doc.setFontSize(8);
+    doc.setTextColor(...gold);
+    doc.text('KIT DE COMBATE', W/2, y, { align:'center', charSpace:3 });
+    y += 22;
+
+    // Kit name
+    doc.setFont('times','bold');
+    doc.setFontSize(28);
+    doc.setTextColor(...ink);
+    doc.text(k.name, W/2, y, { align:'center' });
+    y += 22;
+
+    // Fantasy role
+    doc.setFont('helvetica','bold');
+    doc.setFontSize(11);
+    doc.setTextColor(...goldDeep);
+    doc.text(k.fantasia_role.toUpperCase(), W/2, y, { align:'center', charSpace:2 });
+    y += 16;
+
+    // Fantasy line
+    doc.setFont('helvetica','normal');
+    doc.setFontSize(10);
+    doc.setTextColor(...mid);
+    const fanLines = doc.splitTextToSize(k.fantasia, W - 2*M);
+    fanLines.forEach(l => { doc.text(l, W/2, y, { align:'center' }); y += 12; });
+    y += 8;
+
+    doc.setDrawColor(...gold);
+    doc.setLineWidth(1);
+    doc.line(M, y, W-M, y);
+    y += 24;
+
+    // Stats block (boxed)
+    const statBoxY = y;
+    const statBoxH = 86;
+    doc.setFillColor(245, 230, 192);  // gold-pale
+    doc.roundedRect(M, statBoxY, W - 2*M, statBoxH, 6, 6, 'F');
+
+    doc.setFont('helvetica','bold');
+    doc.setFontSize(7);
+    doc.setTextColor(...goldDeep);
+    doc.text('BONUS DEL KIT', M + 20, statBoxY + 16, { charSpace:1.5 });
+
+    doc.setFont('times','bold');
+    doc.setFontSize(20);
+    doc.setTextColor(...ink);
+    doc.text(`+${k.bonus_vit} Vitalidad`, M + 20, statBoxY + 40);
+    doc.text(`+${k.bonus_aen} Aen / turno`, M + 20, statBoxY + 64);
+
+    // Combined totals on right side
+    const tHP = 20 + k.bonus_vit;
+    const tAen = 2 + k.bonus_aen;
+    doc.setFont('helvetica','bold');
+    doc.setFontSize(7);
+    doc.setTextColor(...goldDeep);
+    doc.text('TOTAL (CON BASELINE)', W - M - 20, statBoxY + 16, { align:'right', charSpace:1.5 });
+
+    doc.setFont('times','bold');
+    doc.setFontSize(20);
+    doc.setTextColor(...ink);
+    doc.text(`${tHP} HP`, W - M - 20, statBoxY + 40, { align:'right' });
+    doc.text(`+${tAen} Aen / turno`, W - M - 20, statBoxY + 64, { align:'right' });
+
+    y = statBoxY + statBoxH + 24;
+
+    // Habilidad
+    doc.setFont('helvetica','bold');
+    doc.setFontSize(7);
+    doc.setTextColor(...goldDeep);
+    doc.text('HABILIDAD DE KIT', M, y, { charSpace:1.5 });
+    y += 14;
+
+    doc.setFont('times','bold');
+    doc.setFontSize(16);
+    doc.setTextColor(...ink);
+    doc.text(`${k.habilidad_name}  ·  ${k.costo}`, M, y);
+    y += 20;
+
+    doc.setFont('helvetica','normal');
+    doc.setFontSize(11);
+    doc.setTextColor(...ink);
+    const habLines = doc.splitTextToSize(k.habilidad_desc, W - 2*M);
+    habLines.forEach(l => {
+      if (y > H - M - 14) { doc.addPage(); y = M; }
+      doc.text(l, M, y);
+      y += 14;
+    });
+    y += 16;
+
+    // Drawback box
+    const dbStartY = y;
+    doc.setFillColor(253, 236, 234);  // red-pale
+    doc.setDrawColor(245, 194, 194);
+    doc.setLineWidth(1.2);
+    const dbLines = doc.splitTextToSize(k.drawback, W - 2*M - 24);
+    const dbBoxH = 36 + dbLines.length * 13;
+    doc.roundedRect(M, dbStartY, W - 2*M, dbBoxH, 6, 6, 'FD');
+
+    doc.setFont('helvetica','bold');
+    doc.setFontSize(7);
+    doc.setTextColor(139, 26, 26);  // red
+    doc.text('⚠  DRAWBACK', M + 12, dbStartY + 16, { charSpace:1.5 });
+
+    doc.setFont('helvetica','normal');
+    doc.setFontSize(10);
+    doc.setTextColor(...ink);
+    dbLines.forEach((l, idx) => {
+      doc.text(l, M + 12, dbStartY + 32 + idx * 13);
+    });
+  }
+
+  const safeName = bs.nombre.replace(/[^a-z0-9 ]/gi,'').trim().replace(/\s+/g,'_') || 'personaje';
+  doc.save(`epicquest_${safeName}.pdf`);
+  showHint('PDF descargado ✓', 'success');
+  setTimeout(() => showHint(''), 3000);
+}
+
+function hexToRgb(hex) {
+  const m = hex.replace('#','').match(/.{2}/g);
+  return m ? m.map(x => parseInt(x,16)) : [0,0,0];
+}
+
+/* Draw habilidad table in PDF — handles wrap, page breaks within table */
+function pdfDrawHabTable(doc, x, yIn, rows, pageW, pageH, M) {
+  const colWidths = [55, 75, 122, 122, 126];  // total ~500pt
+  const totalW = colWidths.reduce((a,b) => a+b, 0);
+  const lineH = 10.5;
+  const cellPad = 5;
+  const headerH = 16;
+  const labels = ['PLANO','COSTO','1-4','5-8','9-12'];
+  const goldPale = [245,230,192], goldDeep = [139,100,0];
+  const ink = [42,31,18], stripe = [252,247,238];
+  const border = [220,210,180];
+
+  let y = yIn;
+
+  // ---- Header
+  doc.setFillColor(...goldPale);
+  doc.rect(x, y, totalW, headerH, 'F');
+  doc.setFont('helvetica','bold');
+  doc.setFontSize(7);
+  doc.setTextColor(...goldDeep);
+  let cx = x;
+  labels.forEach((lbl, i) => {
+    doc.text(lbl, cx + cellPad, y + 11, { charSpace:1 });
+    cx += colWidths[i];
+  });
+  y += headerH;
+
+  let yStart = yIn;
+
+  // ---- Rows
+  rows.forEach((row, ri) => {
+    // Pre-split each cell
+    const cellLines = row.slice(0,5).map((cell, i) =>
+      doc.splitTextToSize(String(cell), colWidths[i] - 2*cellPad)
+    );
+    const maxL = Math.max(1, ...cellLines.map(l => l.length));
+    const rowH = maxL * lineH + 2*cellPad;
+
+    // Page break before this row if needed
+    if (y + rowH > pageH - M - 16) {
+      // Close current table border
+      doc.setDrawColor(...border);
+      doc.setLineWidth(0.5);
+      doc.rect(x, yStart, totalW, y - yStart);
+      // Column dividers
+      let dx = x;
+      for (let i = 0; i < colWidths.length - 1; i++) {
+        dx += colWidths[i];
+        doc.line(dx, yStart, dx, y);
+      }
+      // New page
+      doc.addPage();
+      y = M;
+      yStart = y;
+      // Redraw header on new page
+      doc.setFillColor(...goldPale);
+      doc.rect(x, y, totalW, headerH, 'F');
+      doc.setFont('helvetica','bold');
+      doc.setFontSize(7);
+      doc.setTextColor(...goldDeep);
+      cx = x;
+      labels.forEach((lbl, i) => {
+        doc.text(lbl, cx + cellPad, y + 11, { charSpace:1 });
+        cx += colWidths[i];
+      });
+      y += headerH;
+    }
+
+    // Stripe
+    if (ri % 2 === 0) {
+      doc.setFillColor(...stripe);
+      doc.rect(x, y, totalW, rowH, 'F');
+    }
+
+    // Cells
+    cx = x;
+    cellLines.forEach((lines, i) => {
+      const isFirst = i === 0;
+      doc.setFont('helvetica', isFirst ? 'bold' : 'normal');
+      doc.setFontSize(8.5);
+      doc.setTextColor(...(isFirst ? goldDeep : ink));
+      lines.forEach((line, li) => {
+        doc.text(line, cx + cellPad, y + cellPad + 7 + li * lineH);
+      });
+      cx += colWidths[i];
+    });
+    y += rowH;
+  });
+
+  // Final outer border + dividers
+  doc.setDrawColor(...border);
+  doc.setLineWidth(0.5);
+  doc.rect(x, yStart, totalW, y - yStart);
+  let dx = x;
+  for (let i = 0; i < colWidths.length - 1; i++) {
+    dx += colWidths[i];
+    doc.line(dx, yStart, dx, y);
+  }
+
+  return y;
+}
+
+/* PNG via html2canvas + Web Share API + fallback */
+async function sharePNG() {
+  const bs = state.backstory;
+  if (!bs.nombre) { showHint('Primero agrega el nombre de tu personaje.', 'error'); return; }
+  if (typeof html2canvas === 'undefined') { showHint('Generador aún cargando, intenta de nuevo.', 'error'); return; }
+  const node = document.getElementById('sheet-render');
+  if (!node) { showHint('No encuentro la hoja del personaje.', 'error'); return; }
+
+  showHint('Generando imagen…');
+  try {
+    const canvas = await html2canvas(node, { backgroundColor:'#faf7f2', scale:2, useCORS:true });
+    const dataURL = canvas.toDataURL('image/png');
+    const safeName = bs.nombre.replace(/[^a-z0-9 ]/gi,'').trim().replace(/\s+/g,'_') || 'personaje';
+    const filename = `epicquest_${safeName}.png`;
+
+    // Try Web Share API first (mobile native share-sheet)
+    if (navigator.canShare) {
+      try {
+        const blob = await new Promise(r => canvas.toBlob(r, 'image/png'));
+        const file = new File([blob], filename, { type:'image/png' });
+        if (navigator.canShare({ files:[file] })) {
+          await navigator.share({ files:[file], title:bs.nombre });
+          showHint('Compartido ✓', 'success');
+          setTimeout(() => showHint(''), 3000);
+          return;
+        }
+      } catch(e) {
+        // user cancelled or unsupported — continue to fallback
+        if (e.name === 'AbortError') { showHint(''); return; }
+      }
+    }
+
+    // Try download link (desktop + Android Chrome)
+    const link = document.createElement('a');
+    link.download = filename;
+    link.href = dataURL;
+    link.click();
+
+    // Show inline image fallback for iOS Safari (long-press to save)
+    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+    if (isIOS) {
+      const fb = document.getElementById('image-fallback');
+      const img = document.getElementById('image-fallback-img');
+      img.src = dataURL;
+      fb.style.display = 'block';
+      fb.scrollIntoView({ behavior:'smooth', block:'start' });
+      showHint('Mira abajo: mantén presionada la imagen para guardarla.', 'success');
+    } else {
+      showHint('Imagen descargada ✓', 'success');
+      setTimeout(() => showHint(''), 3000);
+    }
+  } catch (err) {
+    showHint('No se pudo generar la imagen.', 'error');
+  }
+}
+
+function copyToClipboard() {
+  const bs = state.backstory;
+  if (!bs.nombre) { showHint('Primero agrega el nombre de tu personaje.', 'error'); return; }
+  const txt = buildCharText();
+  // navigator.clipboard requires HTTPS / localhost; fallback to textarea
+  const fallbackCopy = () => {
+    const ta = document.createElement('textarea');
+    ta.value = txt; ta.style.position = 'fixed'; ta.style.opacity = '0';
+    document.body.appendChild(ta);
+    ta.focus(); ta.select();
+    try { document.execCommand('copy'); showHint('Texto copiado ✓', 'success'); }
+    catch(e) { showHint('No se pudo copiar.', 'error'); }
+    document.body.removeChild(ta);
+  };
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(txt).then(
+      () => { showHint('Texto copiado ✓', 'success'); setTimeout(() => showHint(''), 3000); },
+      () => fallbackCopy()
+    );
+  } else {
+    fallbackCopy();
+  }
+}
+
+/* localStorage persistence */
+const STORAGE_KEY = 'epicquest_state_v1';
+function persistState() {
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify({
+      selectedFaction: state.selectedFaction,
+      selectedFactionOption: state.selectedFactionOption,
+      selectedClass: state.selectedClass,
+      selectedKit: state.selectedKit,
+      backstory: state.backstory,
+    }));
+  } catch(e) {}
+}
+function loadState() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (!raw) return;
+    const s = JSON.parse(raw);
+    if (s.selectedFaction) state.selectedFaction = s.selectedFaction;
+    if (typeof s.selectedFactionOption === 'number') state.selectedFactionOption = s.selectedFactionOption;
+    if (s.selectedClass) state.selectedClass = s.selectedClass;
+    if (s.selectedKit) state.selectedKit = s.selectedKit;
+    if (s.backstory) {
+      state.backstory = s.backstory;
+      // hydrate inputs once they exist
+      setTimeout(() => {
+        for (const [k,v] of Object.entries(s.backstory)) {
+          const el = document.getElementById('bs-' + k);
+          if (el) el.value = v || '';
+        }
+        renderSheetPreview();
+      }, 50);
+    }
+  } catch(e) {}
+}
+
+/* ─── STEP NAVIGATION ─── */
+function showCharStep(n) {
+  // Allow going back freely. Going forward requires prereqs.
+  if (n === 2 && (!state.selectedFaction || state.selectedFactionOption === null)) {
+    showCharStep(1); return;
+  }
+  if (n === 3 && !state.selectedClass) {
+    showCharStep(2); return;
+  }
+  if (n === 4 && !state.selectedKit) {
+    showCharStep(3); return;
+  }
+  document.querySelectorAll('#screen-personaje > .subsection').forEach(s => s.classList.remove('active'));
+  document.getElementById('char-step-' + n).classList.add('active');
+  updateStepIndicator(n);
+  if (n === 1) renderCharFactions();
+  if (n === 2) renderCharClasses();
+  if (n === 3) renderCharKits();
+  if (n === 4) renderCharStep4();
+  window.scrollTo({ top:0, behavior:'smooth' });
+}
+
+function updateStepIndicator(current) {
+  if (current === undefined) {
+    // Derive current from which subsection is active
+    for (let i=1; i<=4; i++) {
+      if (document.getElementById('char-step-'+i).classList.contains('active')) current = i;
+    }
+  }
+  for (let i=1; i<=4; i++) {
+    const pill = document.getElementById('step-pill-' + i);
+    pill.classList.remove('active','completed');
+    if (i === current) pill.classList.add('active');
+    else if (
+      (i===1 && state.selectedFaction && state.selectedFactionOption !== null) ||
+      (i===2 && state.selectedClass) ||
+      (i===3 && state.selectedKit) ||
+      (i===4 && state.backstory.nombre)
+    ) pill.classList.add('completed');
+  }
+}
+
+/* ─── UTILS ─── */
+function escapeHTML(s) {
+  if (s === null || s === undefined) return '';
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+function escapeAttr(s) {
+  return escapeHTML(s).replace(/'/g,'&#39;');
+}
+
+/* ─── INIT ─── */
+loadState();
+renderMundo();
+renderCharFactions();
+updateStepIndicator(1);
+</script>
+</body>
+</html>

@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Epic Quest — Editor de Clases</title>
+<title>Epic Quest — Clases</title>
 <style>*{margin:0;padding:0;box-sizing:border-box}
 :root{--bg:#fafaf8;--bg2:#f0efeb;--bg3:#e5e3dd;--ink:#1a1a1a;--ink2:#555;--ink3:#999;--accent:#6b4c1e;--accent2:#8b6914;--green:#2d6a2d;--red:#9b2020;--blue:#2a5a8a;--purple:#5a3a8a;--orange:#7a5a1a;--border:#ddd8ce;--radius:6px;--font:'Segoe UI',system-ui,-apple-system,sans-serif}
 body{font-family:var(--font);font-size:14px;color:var(--ink);background:var(--bg);height:100vh;display:flex;flex-direction:column;overflow:hidden}
@@ -69,17 +69,21 @@ select.ts{font-size:9px;padding:2px 3px;border:1px solid var(--border);border-ra
 </head>
 <body>
 <div class="topbar">
-  <h1>Epic Quest — Editor</h1>
+  <h1>Epic Quest — Clases</h1>
+  <span class="mode-badge mode-wiki" id="mode-badge">Wiki</span>
   <span class="dd" id="dd"></span>
   <div class="pw"><div class="pb"><div class="pfill" id="pf"></div></div><span class="ptxt" id="pt"></span></div>
   <div class="spacer"></div>
   <a href="index.html" class="btn sm">◀ Wiki</a>
-  <button class="btn sm" onclick="undo()">↩</button>
-  <button class="btn sm" onclick="exJSON()">↓ data.json</button>
-  <button class="btn sm" onclick="document.getElementById('ijf').click()">↑ JSON</button>
-  <button class="btn sm" onclick="exMD()">↓ MD</button>
-  <button class="btn sm" onclick="document.getElementById('imf').click()">↑ MD</button>
-  <button class="btn sm danger" onclick="resetD()">Reset</button>
+  <button class="btn sm" onclick="toggleMode()" id="mode-btn">✏ Editar</button>
+  <span id="toolbar-edit" style="display:none">
+    <button class="btn sm" onclick="undo()">↩</button>
+    <button class="btn sm" onclick="exJSON()">↓ data.json</button>
+    <button class="btn sm" onclick="document.getElementById('ijf').click()">↑ JSON</button>
+    <button class="btn sm" onclick="exMD()">↓ MD</button>
+    <button class="btn sm" onclick="document.getElementById('imf').click()">↑ MD</button>
+    <button class="btn sm danger" onclick="resetD()">Reset</button>
+  </span>
   <input type="file" id="ijf" class="hidden" accept=".json" onchange="imJSON(event)">
   <input type="file" id="imf" class="hidden" accept=".md,.markdown,.txt" onchange="imMD(event)">
 </div>
@@ -87,7 +91,7 @@ select.ts{font-size:9px;padding:2px 3px;border:1px solid var(--border);border-ra
   <div class="left">
     <div class="sb"><input type="text" id="si" placeholder="Buscar..."></div>
     <div class="ls" id="ls"></div>
-    <div class="la"><button class="btn sm" style="width:100%" onclick="addCls()">+ Nueva clase</button></div>
+    <div class="la" id="la-add" style="display:none"><button class="btn sm" style="width:100%" onclick="addCls()">+ Nueva clase</button></div>
   </div>
   <div class="right" id="rp"><div class="es">Cargando...</div></div>
 </div>
@@ -95,7 +99,7 @@ select.ts{font-size:9px;padding:2px 3px;border:1px solid var(--border);border-ra
 <div class="popup-overlay" id="popoverlay" style="display:none" onclick="closePopup()"></div>
 <div class="popup" id="popup" style="display:none"></div>
 <script>
-var mode='edit';
+var mode='wiki';
 var state=null,origData=null,selId=null,selType=null,selPid=null,isDirty=false,sq='',undoS=[],popupData=null;
 var TYPES=['Base','Pasiva corta','Pasiva de concentración','Activa','Reactiva','Heroica'];
 var CONDS=['Derribado','Aturdido','Ralentizado','Inmovilizado','Asustado','Incapacitado','Aterrorizado','Desconcentrado','Desarmado','Marcado','Invisible','Congelado'];

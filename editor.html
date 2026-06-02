@@ -96,7 +96,7 @@ select.ts{font-size:9px;padding:2px 3px;border:1px solid var(--border);border-ra
 <div class="popup" id="popup" style="display:none"></div>
 <script>
 var mode='edit';
-var state=null,origData=null,mode='wiki',selId=null,selType=null,selPid=null,isDirty=false,sq='',undoS=[],popupData=null;
+var state=null,origData=null,selId=null,selType=null,selPid=null,isDirty=false,sq='',undoS=[],popupData=null;
 var TYPES=['Base','Pasiva corta','Pasiva de concentración','Activa','Reactiva','Heroica'];
 var CONDS=['Derribado','Aturdido','Ralentizado','Inmovilizado','Asustado','Incapacitado','Aterrorizado','Desconcentrado','Desarmado','Marcado','Invisible','Congelado'];
 var ASK='eq_v5',PASS='12345';
@@ -114,7 +114,7 @@ function mk(){isDirty=true;document.getElementById('dd').classList.add('show');t
 function undo(){if(!undoS.length)return toast('Nada');state=JSON.parse(undoS.pop());rl();rr();mk();toast('Deshecho')}
 function toast(m){var e=document.getElementById('toast');e.textContent=m;e.classList.add('show');clearTimeout(e._t);e._t=setTimeout(function(){e.classList.remove('show')},2000)}
 function toggleMode(){if(mode==='wiki'){var p=prompt('Password:');if(p!==PASS)return toast('Incorrecto');mode='edit';toast('Editor activado')}else{mode='wiki';closePopup();toast('Modo wiki')}updateToolbar();rl();rr()}
-function updateToolbar(){var tb=document.getElementById('toolbar-edit'),mb=document.getElementById('mode-badge'),la=document.getElementById('la-add'),mbtn=document.getElementById('mode-btn');if(mode==='edit'){tb.style.display='';mb.className='mode-badge mode-edit';mb.textContent='Editor';la.style.display='';mbtn.textContent='\u25C0 Wiki'}else{tb.style.display='none';mb.className='mode-badge mode-wiki';mb.textContent='Wiki';la.style.display='none';mbtn.textContent='\u270F Editar'}}
+function updateToolbar(){var tb=document.getElementById('toolbar-edit'),mb=document.getElementById('mode-badge'),la=document.getElementById('la-add'),mbtn=document.getElementById('mode-btn');if(mode==='edit'){if(tb)tb.style.display='';if(mb){mb.className='mode-badge mode-edit';mb.textContent='Editor'}if(la)la.style.display='';if(mbtn)mbtn.textContent='\u25C0 Wiki'}else{if(tb)tb.style.display='none';if(mb){mb.className='mode-badge mode-wiki';mb.textContent='Wiki'}if(la)la.style.display='none';if(mbtn)mbtn.textContent='\u270F Editar'}}
 function cellText(cell){if(!cell||typeof cell==='string')return cell||'';var p=[];if(cell.d)p.push(cell.d+' da\u00F1o');if(cell.c&&cell.c.length)cell.c.forEach(function(x){p.push(x.toLowerCase())});if(cell.e&&cell.e.length)cell.e.forEach(function(x){p.push(x)});if(cell.db&&cell.db.length)cell.db.forEach(function(x){p.push(x)});return p.join(', ')}
 function cellHtml(cell){if(!cell)return'';if(typeof cell==='string')return cell;var h='';if(cell.d)h+='<span class="cell-tag dmg">'+cell.d+' dmg</span>';if(cell.c)cell.c.forEach(function(x){h+='<span class="cell-tag cond">'+x+'</span>'});if(cell.e)cell.e.forEach(function(x){h+='<span class="cell-tag eff">'+x+'</span>'});if(cell.db)cell.db.forEach(function(x){h+='<span class="cell-tag dbk">'+x+'</span>'});return h||'<span style="color:#e5e3dd;font-style:italic">...</span>'}
 function isEmpty(cell){if(!cell)return true;if(typeof cell==='string')return!cell;return!cell.d&&(!cell.c||!cell.c.length)&&(!cell.e||!cell.e.length)&&(!cell.db||!cell.db.length)}
